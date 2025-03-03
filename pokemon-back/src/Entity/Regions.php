@@ -2,13 +2,13 @@
 
 namespace App\Entity;
 
-use App\Repository\BoitesShinyRepository;
+use App\Repository\RegionsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: BoitesShinyRepository::class)]
-class BoitesShiny
+#[ORM\Entity(repositoryClass: RegionsRepository::class)]
+class Regions
 {
   #[ORM\Id]
   #[ORM\GeneratedValue]
@@ -16,20 +16,17 @@ class BoitesShiny
   private ?int $id = null;
 
   #[ORM\Column(length: 255)]
-  private ?string $nom = null;
-
-  #[ORM\Column]
-  private ?int $nbLevel100 = null;
+  private ?string $nomRegion = null;
 
   /**
    * @var Collection<int, PokemonShiny>
    */
-  #[ORM\OneToMany(targetEntity: PokemonShiny::class, mappedBy: 'boite')]
+  #[ORM\OneToMany(targetEntity: PokemonShiny::class, mappedBy: 'region')]
   private Collection $shinyList;
 
   public function __construct()
   {
-    $this->shinyList = new ArrayCollection();
+      $this->shinyList = new ArrayCollection();
   }
 
   public function getId(): ?int
@@ -37,26 +34,14 @@ class BoitesShiny
     return $this->id;
   }
 
-  public function getNom(): ?string
+  public function getNomRegion(): ?string
   {
-    return $this->nom;
+    return $this->nomRegion;
   }
 
-  public function setNom(string $nom): static
+  public function setNomRegion(string $nomRegion): static
   {
-    $this->nom = $nom;
-
-    return $this;
-  }
-
-  public function getNbLevel100(): ?int
-  {
-    return $this->nbLevel100;
-  }
-
-  public function setNbLevel100(int $nbLevel100): static
-  {
-    $this->nbLevel100 = $nbLevel100;
+    $this->nomRegion = $nomRegion;
 
     return $this;
   }
@@ -73,7 +58,7 @@ class BoitesShiny
   {
     if (!$this->shinyList->contains($shinyList)) {
       $this->shinyList->add($shinyList);
-      $shinyList->setBoite($this);
+      $shinyList->setRegion($this);
     }
 
     return $this;
@@ -83,8 +68,8 @@ class BoitesShiny
   {
     if ($this->shinyList->removeElement($shinyList)) {
       // set the owning side to null (unless already changed)
-      if ($shinyList->getBoite() === $this) {
-        $shinyList->setBoite(null);
+      if ($shinyList->getRegion() === $this) {
+        $shinyList->setRegion(null);
       }
     }
 

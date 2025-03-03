@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\GenresRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: GenresRepository::class)]
@@ -21,6 +23,17 @@ class Genres
 
   #[ORM\Column]
   private ?int $nbShiny = null;
+
+  /**
+   * @var Collection<int, PokemonShiny>
+   */
+  #[ORM\OneToMany(targetEntity: PokemonShiny::class, mappedBy: 'genre')]
+  private Collection $shinyList;
+
+  public function __construct()
+  {
+      $this->shinyList = new ArrayCollection();
+  }
 
   public function getId(): ?int
   {
@@ -61,5 +74,35 @@ class Genres
     $this->nbShiny = $nbShiny;
 
     return $this;
+  }
+
+  /**
+   * @return Collection<int, PokemonShiny>
+   */
+  public function getShinyList(): Collection
+  {
+      return $this->shinyList;
+  }
+
+  public function addShinyList(PokemonShiny $shinyList): static
+  {
+      if (!$this->shinyList->contains($shinyList)) {
+          $this->shinyList->add($shinyList);
+          $shinyList->setGenre($this);
+      }
+
+      return $this;
+  }
+
+  public function removeShinyList(PokemonShiny $shinyList): static
+  {
+      if ($this->shinyList->removeElement($shinyList)) {
+          // set the owning side to null (unless already changed)
+          if ($shinyList->getGenre() === $this) {
+              $shinyList->setGenre(null);
+          }
+      }
+
+      return $this;
   }
 }
