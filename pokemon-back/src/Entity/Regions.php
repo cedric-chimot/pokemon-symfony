@@ -24,9 +24,16 @@ class Regions
   #[ORM\OneToMany(targetEntity: PokemonShiny::class, mappedBy: 'region')]
   private Collection $shinyList;
 
+  /**
+   * @var Collection<int, PokedexNational>
+   */
+  #[ORM\OneToMany(targetEntity: PokedexNational::class, mappedBy: 'region')]
+  private Collection $pokemonList;
+
   public function __construct()
   {
-      $this->shinyList = new ArrayCollection();
+    $this->shinyList = new ArrayCollection();
+    $this->pokemonList = new ArrayCollection();
   }
 
   public function getId(): ?int
@@ -49,12 +56,12 @@ class Regions
   /**
    * @return Collection<int, PokemonShiny>
    */
-  public function getShinyList(): Collection
+  public function getShiny(): Collection
   {
     return $this->shinyList;
   }
 
-  public function addShinyList(PokemonShiny $shinyList): static
+  public function addShiny(PokemonShiny $shinyList): static
   {
     if (!$this->shinyList->contains($shinyList)) {
       $this->shinyList->add($shinyList);
@@ -64,12 +71,42 @@ class Regions
     return $this;
   }
 
-  public function removeShinyList(PokemonShiny $shinyList): static
+  public function removeShiny(PokemonShiny $shinyList): static
   {
     if ($this->shinyList->removeElement($shinyList)) {
       // set the owning side to null (unless already changed)
       if ($shinyList->getRegion() === $this) {
         $shinyList->setRegion(null);
+      }
+    }
+
+    return $this;
+  }
+
+  /**
+   * @return Collection<int, PokedexNational>
+   */
+  public function getPokemon(): Collection
+  {
+    return $this->pokemonList;
+  }
+
+  public function addPokemon(PokedexNational $pokemonList): static
+  {
+    if (!$this->pokemonList->contains($pokemonList)) {
+      $this->pokemonList->add($pokemonList);
+      $pokemonList->setRegion($this);
+    }
+
+    return $this;
+  }
+
+  public function removePokemon(PokedexNational $pokemonList): static
+  {
+    if ($this->pokemonList->removeElement($pokemonList)) {
+      // set the owning side to null (unless already changed)
+      if ($pokemonList->getRegion() === $this) {
+        $pokemonList->setRegion(null);
       }
     }
 

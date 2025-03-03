@@ -30,9 +30,16 @@ class Pokeballs
   #[ORM\OneToMany(targetEntity: PokemonShiny::class, mappedBy: 'pokeball')]
   private Collection $shinyList;
 
+  /**
+   * @var Collection<int, PokedexNational>
+   */
+  #[ORM\OneToMany(targetEntity: PokedexNational::class, mappedBy: 'pokeball')]
+  private Collection $pokemonList;
+
   public function __construct()
   {
-      $this->shinyList = new ArrayCollection();
+    $this->shinyList = new ArrayCollection();
+    $this->pokemonList = new ArrayCollection();
   }
 
   public function getId(): ?int
@@ -79,30 +86,60 @@ class Pokeballs
   /**
    * @return Collection<int, PokemonShiny>
    */
-  public function getShinyList(): Collection
+  public function getShiny(): Collection
   {
-      return $this->shinyList;
+    return $this->shinyList;
   }
 
-  public function addShinyList(PokemonShiny $shinyList): static
+  public function addShiny(PokemonShiny $shinyList): static
   {
-      if (!$this->shinyList->contains($shinyList)) {
-          $this->shinyList->add($shinyList);
-          $shinyList->setPokeball($this);
-      }
+    if (!$this->shinyList->contains($shinyList)) {
+      $this->shinyList->add($shinyList);
+      $shinyList->setPokeball($this);
+    }
 
-      return $this;
+    return $this;
   }
 
-  public function removeShinyList(PokemonShiny $shinyList): static
+  public function removeShiny(PokemonShiny $shinyList): static
   {
-      if ($this->shinyList->removeElement($shinyList)) {
-          // set the owning side to null (unless already changed)
-          if ($shinyList->getPokeball() === $this) {
-              $shinyList->setPokeball(null);
-          }
+    if ($this->shinyList->removeElement($shinyList)) {
+      // set the owning side to null (unless already changed)
+      if ($shinyList->getPokeball() === $this) {
+        $shinyList->setPokeball(null);
       }
+    }
 
-      return $this;
+    return $this;
+  }
+
+  /**
+   * @return Collection<int, PokedexNational>
+   */
+  public function getPokemon(): Collection
+  {
+    return $this->pokemonList;
+  }
+
+  public function addPokemon(PokedexNational $pokemonList): static
+  {
+    if (!$this->pokemonList->contains($pokemonList)) {
+      $this->pokemonList->add($pokemonList);
+      $pokemonList->setPokeball($this);
+    }
+
+    return $this;
+  }
+
+  public function removePokemon(PokedexNational $pokemonList): static
+  {
+    if ($this->pokemonList->removeElement($pokemonList)) {
+      // set the owning side to null (unless already changed)
+      if ($pokemonList->getPokeball() === $this) {
+        $pokemonList->setPokeball(null);
+      }
+    }
+
+    return $this;
   }
 }

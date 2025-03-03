@@ -32,7 +32,7 @@ class Genres
 
   public function __construct()
   {
-      $this->shinyList = new ArrayCollection();
+    $this->shinyList = new ArrayCollection();
   }
 
   public function getId(): ?int
@@ -79,30 +79,30 @@ class Genres
   /**
    * @return Collection<int, PokemonShiny>
    */
-  public function getShinyList(): Collection
+  public function getShiny(): Collection
   {
-      return $this->shinyList;
+    return $this->shinyList;
   }
 
-  public function addShinyList(PokemonShiny $shinyList): static
+  public function addShiny(PokemonShiny $shinyList): static
   {
-      if (!$this->shinyList->contains($shinyList)) {
-          $this->shinyList->add($shinyList);
-          $shinyList->setGenre($this);
-      }
+    if (!$this->shinyList->contains($shinyList)) {
+      $this->shinyList->add($shinyList);
+      $shinyList->setGenre($this);
+    }
 
-      return $this;
+    return $this;
   }
 
-  public function removeShinyList(PokemonShiny $shinyList): static
+  public function removeShiny(PokemonShiny $shinyList): static
   {
-      if ($this->shinyList->removeElement($shinyList)) {
-          // set the owning side to null (unless already changed)
-          if ($shinyList->getGenre() === $this) {
-              $shinyList->setGenre(null);
-          }
+    if ($this->shinyList->removeElement($shinyList)) {
+      // set the owning side to null (unless already changed)
+      if ($shinyList->getGenre() === $this) {
+        $shinyList->setGenre(null);
       }
+    }
 
-      return $this;
+    return $this;
   }
 }
