@@ -42,10 +42,17 @@ class Dresseurs
   #[ORM\OneToMany(targetEntity: PokedexNational::class, mappedBy: 'dresseur')]
   private Collection $pokemonList;
 
+  /**
+   * @var Collection<int, BoiteShinyDresseur>
+   */
+  #[ORM\OneToMany(targetEntity: BoiteShinyDresseur::class, mappedBy: 'dresseur')]
+  private Collection $boiteShinyDresseurs;
+
   public function __construct()
   {
     $this->shinyList = new ArrayCollection();
     $this->pokemonList = new ArrayCollection();
+    $this->boiteShinyDresseurs = new ArrayCollection();
   }
 
   public function getId(): ?int
@@ -167,6 +174,36 @@ class Dresseurs
       // set the owning side to null (unless already changed)
       if ($pokemonList->getDresseur() === $this) {
         $pokemonList->setDresseur(null);
+      }
+    }
+
+    return $this;
+  }
+
+  /**
+   * @return Collection<int, BoiteShinyDresseur>
+   */
+  public function getBoiteShinyDresseurs(): Collection
+  {
+    return $this->boiteShinyDresseurs;
+  }
+
+  public function addBoiteShinyDresseur(BoiteShinyDresseur $boiteShinyDresseur): static
+  {
+    if (!$this->boiteShinyDresseurs->contains($boiteShinyDresseur)) {
+      $this->boiteShinyDresseurs->add($boiteShinyDresseur);
+      $boiteShinyDresseur->setDresseur($this);
+    }
+
+    return $this;
+  }
+
+  public function removeBoiteShinyDresseur(BoiteShinyDresseur $boiteShinyDresseur): static
+  {
+    if ($this->boiteShinyDresseurs->removeElement($boiteShinyDresseur)) {
+      // set the owning side to null (unless already changed)
+      if ($boiteShinyDresseur->getDresseur() === $this) {
+        $boiteShinyDresseur->setDresseur(null);
       }
     }
 
