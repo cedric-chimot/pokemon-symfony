@@ -2,22 +2,22 @@
 
 namespace App\Repository;
 
-use App\Entity\BoiteShinyDresseur;
+use App\Entity\BoiteShinyPokeball;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<BoiteShinyDresseur>
+ * @extends ServiceEntityRepository<BoiteShinyPokeball>
  */
-class BoiteShinyDresseurRepository extends ServiceEntityRepository
+class BoiteShinyPokeballRepository extends ServiceEntityRepository
 {
   public function __construct(ManagerRegistry $registry)
   {
-    parent::__construct($registry, BoiteShinyDresseur::class);
+    parent::__construct($registry, BoiteShinyPokeball::class);
   }
 
   //    /**
-  //     * @return BoiteShinyDresseur[] Returns an array of BoiteShinyDresseur objects
+  //     * @return BoiteShinyPokeball[] Returns an array of BoiteShinyPokeball objects
   //     */
   //    public function findByExampleField($value): array
   //    {
@@ -31,7 +31,7 @@ class BoiteShinyDresseurRepository extends ServiceEntityRepository
   //        ;
   //    }
 
-  //    public function findOneBySomeField($value): ?BoiteShinyDresseur
+  //    public function findOneBySomeField($value): ?BoiteShinyPokeball
   //    {
   //        return $this->createQueryBuilder('b')
   //            ->andWhere('b.exampleField = :val')

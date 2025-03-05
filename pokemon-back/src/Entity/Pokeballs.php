@@ -36,10 +36,17 @@ class Pokeballs
   #[ORM\OneToMany(targetEntity: PokedexNational::class, mappedBy: 'pokeball')]
   private Collection $pokemonList;
 
+  /**
+   * @var Collection<int, BoiteShinyPokeball>
+   */
+  #[ORM\OneToMany(targetEntity: BoiteShinyPokeball::class, mappedBy: 'pokeball')]
+  private Collection $boiteShinyPokeballs;
+
   public function __construct()
   {
     $this->shinyList = new ArrayCollection();
     $this->pokemonList = new ArrayCollection();
+    $this->boiteShinyPokeballs = new ArrayCollection();
   }
 
   public function getId(): ?int
@@ -141,5 +148,35 @@ class Pokeballs
     }
 
     return $this;
+  }
+
+  /**
+   * @return Collection<int, BoiteShinyPokeball>
+   */
+  public function getBoiteShinyPokeballs(): Collection
+  {
+      return $this->boiteShinyPokeballs;
+  }
+
+  public function addBoiteShinyPokeball(BoiteShinyPokeball $boiteShinyPokeball): static
+  {
+      if (!$this->boiteShinyPokeballs->contains($boiteShinyPokeball)) {
+          $this->boiteShinyPokeballs->add($boiteShinyPokeball);
+          $boiteShinyPokeball->setPokeball($this);
+      }
+
+      return $this;
+  }
+
+  public function removeBoiteShinyPokeball(BoiteShinyPokeball $boiteShinyPokeball): static
+  {
+      if ($this->boiteShinyPokeballs->removeElement($boiteShinyPokeball)) {
+          // set the owning side to null (unless already changed)
+          if ($boiteShinyPokeball->getPokeball() === $this) {
+              $boiteShinyPokeball->setPokeball(null);
+          }
+      }
+
+      return $this;
   }
 }

@@ -36,10 +36,17 @@ class Natures
   #[ORM\OneToMany(targetEntity: PokedexNational::class, mappedBy: 'nature')]
   private Collection $pokemonList;
 
+  /**
+   * @var Collection<int, BoiteShinyNature>
+   */
+  #[ORM\OneToMany(targetEntity: BoiteShinyNature::class, mappedBy: 'nature')]
+  private Collection $boiteShinyNatures;
+
   public function __construct()
   {
     $this->shinyList = new ArrayCollection();
     $this->pokemonList = new ArrayCollection();
+    $this->boiteShinyNatures = new ArrayCollection();
   }
 
   public function getId(): ?int
@@ -88,7 +95,7 @@ class Natures
    */
   public function getShiny(): Collection
   {
-      return $this->shinyList;
+    return $this->shinyList;
   }
 
   public function addShiny(PokemonShiny $shinyList): static
@@ -137,6 +144,36 @@ class Natures
       // set the owning side to null (unless already changed)
       if ($pokemonList->getNature() === $this) {
         $pokemonList->setNature(null);
+      }
+    }
+
+    return $this;
+  }
+
+  /**
+   * @return Collection<int, BoiteShinyNature>
+   */
+  public function getBoiteShinyNatures(): Collection
+  {
+    return $this->boiteShinyNatures;
+  }
+
+  public function addBoiteShinyNature(BoiteShinyNature $boiteShinyNature): static
+  {
+    if (!$this->boiteShinyNatures->contains($boiteShinyNature)) {
+      $this->boiteShinyNatures->add($boiteShinyNature);
+      $boiteShinyNature->setNature($this);
+    }
+
+    return $this;
+  }
+
+  public function removeBoiteShinyNature(BoiteShinyNature $boiteShinyNature): static
+  {
+    if ($this->boiteShinyNatures->removeElement($boiteShinyNature)) {
+        // set the owning side to null (unless already changed)
+      if ($boiteShinyNature->getNature() === $this) {
+        $boiteShinyNature->setNature(null);
       }
     }
 
