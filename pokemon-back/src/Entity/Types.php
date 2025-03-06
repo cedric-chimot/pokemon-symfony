@@ -39,11 +39,18 @@ class Types
   #[ORM\OneToMany(targetEntity: PokemonShiny::class, mappedBy: 'type2')]
   private Collection $shinyListType2;
 
+  /**
+   * @var Collection<int, BoiteShinyType>
+   */
+  #[ORM\OneToMany(targetEntity: BoiteShinyType::class, mappedBy: 'type')]
+  private Collection $boiteShinyTypes;
+
   public function __construct()
   {
     $this->attaques = new ArrayCollection();
     $this->shinyList = new ArrayCollection();
     $this->shinyListType2 = new ArrayCollection();
+    $this->boiteShinyTypes = new ArrayCollection();
   }
 
   public function getId(): ?int
@@ -163,5 +170,35 @@ class Types
     }
 
     return $this;
+  }
+
+  /**
+   * @return Collection<int, BoiteShinyType>
+   */
+  public function getBoiteShinyTypes(): Collection
+  {
+      return $this->boiteShinyTypes;
+  }
+
+  public function addBoiteShinyType(BoiteShinyType $boiteShinyType): static
+  {
+      if (!$this->boiteShinyTypes->contains($boiteShinyType)) {
+          $this->boiteShinyTypes->add($boiteShinyType);
+          $boiteShinyType->setType($this);
+      }
+
+      return $this;
+  }
+
+  public function removeBoiteShinyType(BoiteShinyType $boiteShinyType): static
+  {
+      if ($this->boiteShinyTypes->removeElement($boiteShinyType)) {
+          // set the owning side to null (unless already changed)
+          if ($boiteShinyType->getType() === $this) {
+              $boiteShinyType->setType(null);
+          }
+      }
+
+      return $this;
   }
 }

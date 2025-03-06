@@ -30,9 +30,16 @@ class Genres
   #[ORM\OneToMany(targetEntity: PokemonShiny::class, mappedBy: 'genre')]
   private Collection $shinyList;
 
+  /**
+   * @var Collection<int, BoiteShinyGenre>
+   */
+  #[ORM\OneToMany(targetEntity: BoiteShinyGenre::class, mappedBy: 'genre')]
+  private Collection $boiteShinyGenres;
+
   public function __construct()
   {
     $this->shinyList = new ArrayCollection();
+    $this->boiteShinyGenres = new ArrayCollection();
   }
 
   public function getId(): ?int
@@ -104,5 +111,35 @@ class Genres
     }
 
     return $this;
+  }
+
+  /**
+   * @return Collection<int, BoiteShinyGenre>
+   */
+  public function getBoiteShinyGenres(): Collection
+  {
+      return $this->boiteShinyGenres;
+  }
+
+  public function addBoiteShinyGenre(BoiteShinyGenre $boiteShinyGenre): static
+  {
+      if (!$this->boiteShinyGenres->contains($boiteShinyGenre)) {
+          $this->boiteShinyGenres->add($boiteShinyGenre);
+          $boiteShinyGenre->setGenre($this);
+      }
+
+      return $this;
+  }
+
+  public function removeBoiteShinyGenre(BoiteShinyGenre $boiteShinyGenre): static
+  {
+      if ($this->boiteShinyGenres->removeElement($boiteShinyGenre)) {
+          // set the owning side to null (unless already changed)
+          if ($boiteShinyGenre->getGenre() === $this) {
+              $boiteShinyGenre->setGenre(null);
+          }
+      }
+
+      return $this;
   }
 }

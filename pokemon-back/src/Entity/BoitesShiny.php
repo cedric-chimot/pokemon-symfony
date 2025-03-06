@@ -45,12 +45,26 @@ class BoitesShiny
   #[ORM\OneToMany(targetEntity: BoiteShinyPokeball::class, mappedBy: 'boiteShiny')]
   private Collection $boiteShinyPokeballs;
 
+  /**
+   * @var Collection<int, BoiteShinyGenre>
+   */
+  #[ORM\OneToMany(targetEntity: BoiteShinyGenre::class, mappedBy: 'boiteShiny')]
+  private Collection $boiteShinyGenres;
+
+  /**
+   * @var Collection<int, BoiteShinyType>
+   */
+  #[ORM\OneToMany(targetEntity: BoiteShinyType::class, mappedBy: 'boiteShiny')]
+  private Collection $boiteShinyTypes;
+
   public function __construct()
   {
     $this->shinyList = new ArrayCollection();
     $this->boiteShinyDresseurs = new ArrayCollection();
     $this->boiteShinyNatures = new ArrayCollection();
     $this->boiteShinyPokeballs = new ArrayCollection();
+    $this->boiteShinyGenres = new ArrayCollection();
+    $this->boiteShinyTypes = new ArrayCollection();
   }
 
   public function getId(): ?int
@@ -196,6 +210,66 @@ class BoitesShiny
       // set the owning side to null (unless already changed)
       if ($boiteShinyPokeball->getBoiteShiny() === $this) {
         $boiteShinyPokeball->setBoiteShiny(null);
+      }
+    }
+
+    return $this;
+  }
+
+  /**
+   * @return Collection<int, BoiteShinyGenre>
+   */
+  public function getBoiteShinyGenres(): Collection
+  {
+    return $this->boiteShinyGenres;
+  }
+
+  public function addBoiteShinyGenre(BoiteShinyGenre $boiteShinyGenre): static
+  {
+    if (!$this->boiteShinyGenres->contains($boiteShinyGenre)) {
+      $this->boiteShinyGenres->add($boiteShinyGenre);
+      $boiteShinyGenre->setBoiteShiny($this);
+    }
+
+    return $this;
+  }
+
+  public function removeBoiteShinyGenre(BoiteShinyGenre $boiteShinyGenre): static
+  {
+    if ($this->boiteShinyGenres->removeElement($boiteShinyGenre)) {
+      // set the owning side to null (unless already changed)
+      if ($boiteShinyGenre->getBoiteShiny() === $this) {
+        $boiteShinyGenre->setBoiteShiny(null);
+      }
+    }
+
+    return $this;
+  }
+
+  /**
+   * @return Collection<int, BoiteShinyType>
+   */
+  public function getBoiteShinyTypes(): Collection
+  {
+    return $this->boiteShinyTypes;
+  }
+
+  public function addBoiteShinyType(BoiteShinyType $boiteShinyType): static
+  {
+    if (!$this->boiteShinyTypes->contains($boiteShinyType)) {
+      $this->boiteShinyTypes->add($boiteShinyType);
+      $boiteShinyType->setBoiteShiny($this);
+    }
+
+    return $this;
+  }
+
+  public function removeBoiteShinyType(BoiteShinyType $boiteShinyType): static
+  {
+    if ($this->boiteShinyTypes->removeElement($boiteShinyType)) {
+      // set the owning side to null (unless already changed)
+      if ($boiteShinyType->getBoiteShiny() === $this) {
+        $boiteShinyType->setBoiteShiny(null);
       }
     }
 
