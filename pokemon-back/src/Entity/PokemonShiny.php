@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PokemonShinyRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PokemonShinyRepository::class)]
 class PokemonShiny
@@ -14,58 +15,74 @@ class PokemonShiny
   private ?int $id = null;
 
   #[ORM\Column(length: 255)]
+  #[Groups('pokemon:read')]
   private ?string $numDex = null;
 
   #[ORM\Column(length: 255)]
+  #[Groups('pokemon:read')]
   private ?string $nomPokemon = null;
 
   #[ORM\Column(length: 255)]
+  #[Groups('pokemon:read')]
   private ?string $ivManquants = null;
 
   #[ORM\Column]
+  #[Groups('pokemon:read')]
   private ?int $position = null;
 
   #[ORM\ManyToOne(inversedBy: 'shinyList')]
   #[ORM\JoinColumn(nullable: false)]
+  #[Groups('pokemon:read')]
   private ?Natures $nature = null;
 
   #[ORM\ManyToOne(inversedBy: 'shinyList')]
   #[ORM\JoinColumn(nullable: false)]
+  #[Groups('pokemon:read')]
   private ?Dresseurs $dresseur = null;
 
   #[ORM\ManyToOne(inversedBy: 'shinyList')]
   #[ORM\JoinColumn(nullable: false)]
+  #[Groups('pokemon:read')]
   private ?Pokeballs $pokeball = null;
 
   #[ORM\ManyToOne(inversedBy: 'shinyList')]
   #[ORM\JoinColumn(nullable: false)]
+  #[Groups('pokemon:read')]
   private ?Types $type1 = null;
 
   #[ORM\ManyToOne(inversedBy: 'shinyListType2')]
+  #[Groups('pokemon:read')]
   private ?Types $type2 = null;
 
   #[ORM\ManyToOne(inversedBy: 'shinyList')]
   #[ORM\JoinColumn(nullable: false)]
+  #[Groups('pokemon:read')]
   private ?Genres $genre = null;
 
   #[ORM\ManyToOne(inversedBy: 'pokemonShiniesAttaque1')]
+  #[Groups('pokemon:read')]
   private ?Attaques $attaque1 = null;
 
   #[ORM\ManyToOne(inversedBy: 'pokemonShiniesAttaque2')]
+  #[Groups('pokemon:read')]
   private ?Attaques $attaque2 = null;
 
   #[ORM\ManyToOne(inversedBy: 'pokemonShiniesAttaque3')]
+  #[Groups('pokemon:read')]
   private ?Attaques $attaque3 = null;
 
   #[ORM\ManyToOne(inversedBy: 'pokemonShiniesAttaque4')]
+  #[Groups('pokemon:read')]
   private ?Attaques $attaque4 = null;
 
   #[ORM\ManyToOne(inversedBy: 'shinyList')]
   #[ORM\JoinColumn(nullable: false)]
+  #[Groups('pokemon:read')]
   private ?BoitesShiny $boite = null;
 
   #[ORM\ManyToOne(inversedBy: 'shinyList')]
   #[ORM\JoinColumn(nullable: false)]
+  #[Groups('pokemon:read')]
   private ?Regions $region = null;
 
   public function getId(): ?int

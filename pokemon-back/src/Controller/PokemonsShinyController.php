@@ -8,12 +8,11 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class PokemonsShinyController extends AbstractController
 {
-  #[Route('/pokemons/shiny', name: 'app_pokemons_shiny')]
-  public function index(): JsonResponse
+  #[Route('/api/pokemons/shiny', name: 'api_pokemons_shiny', methods: ['GET'])]
+  public function getShinyPokemons(PokemonShinyRepository $shinyRepository): JsonResponse
   {
-    return $this->json([
-      'message' => 'Welcome to your new controller!',
-      'path' => 'src/Controller/PokemonsShinyController.php',
-    ]);
+    $shiny = $shinyRepository->findAll();
+
+    return $this->json($shiny, 200, [], ['groups' => 'pokemon:read']);
   }
 }
