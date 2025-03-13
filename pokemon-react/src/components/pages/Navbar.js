@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import logoPokemon from '../assets/img/logoPokemon.png'; // Ajuste le chemin si nécessaire
+import logoPokemon from '../../assets/img/logoPokemon.png'; // Ajuste le chemin si nécessaire
+import '../../assets/styles/navbar.css'; // Import du CSS
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -11,7 +12,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-primary bg-primary">
+    <nav className="navbar navbar-expand-lg navbar-primary">
       <div className="container-fluid">
         {/* Logo + Lien vers la page d'accueil */}
         <Link className="navbar-brand text-white mr-4" to="/home">
