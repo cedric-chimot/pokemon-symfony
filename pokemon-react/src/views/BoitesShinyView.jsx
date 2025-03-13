@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import BoiteSwitcher from '../components/commons/BoiteSwitcher';
 import ButtonTop from '../components/commons/ButtonTop';
+import '../assets/styles/boite-shiny.css'; // Import du CSS
 
 const BoiteShiny = () => {
   const [pokemonList, setPokemonList] = useState([]);
