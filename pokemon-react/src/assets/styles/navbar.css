@@ -11,7 +11,7 @@
 .nav-link.active {
   text-decoration: underline;
   font-weight: bold;
-  color: #56e4be;
+  color: #56e4be !important;
 }
 
 .navbar-brand {
@@ -20,7 +20,8 @@
   gap: 10px; /* Ajoute un espace entre l'image et le texte */
 }
 
-.logo-pokemon {
-  height: 42px;
-  width: auto;
+.logo-pokemon-navbar {
+  height: 42px !important;
+  width: auto !important;
+  max-height: 42px;
 }
