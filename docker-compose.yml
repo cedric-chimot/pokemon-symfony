@@ -15,23 +15,6 @@ services:
     environment:
       - SYMFONY_ENV=dev
 
-  react:
-    build:
-      context: .
-      dockerfile: pokemon-react/Dockerfile
-    container_name: pokemon-symfony-react
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./pokemon-react:/app
-      - /app/node_modules  # Pour éviter les conflits entre les node_modules locaux et ceux du conteneur
-    networks:
-      - pokemon-network
-    environment:
-      - NODE_ENV=development
-      - CHOKIDAR_USEPOLLING=true
-      - WATCHPACK_POLLING=true
-
 networks:
   pokemon-network:
     driver: bridge
