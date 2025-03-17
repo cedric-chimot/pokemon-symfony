@@ -15,15 +15,21 @@ RUN apt-get update && apt-get install -y \
 # Activer le module Apache rewrite
 RUN a2enmod rewrite
 
+# Désactiver le cache Symfony pour voir les modifications immédiatement
+RUN echo "opcache.enable=0" > /usr/local/etc/php/conf.d/opcache.ini
+
 # Copier le code source de Symfony dans le conteneur
 COPY ./pokemon-back /var/www/html
 
 # Copier la configuration Apache personnalisée
 COPY ./pokemon-back/000-default.conf /etc/apache2/sites-enabled/000-default.conf
 
-# Installer les dépendances PHP de Symfony via Composer
+# Installer Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
 WORKDIR /var/www/html
+
+# Installer les dépendances Symfony
 RUN composer install
 
 # Exposer le port 80

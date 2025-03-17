@@ -9,11 +9,14 @@ services:
     ports:
       - "8081:80"
     volumes:
-      - ./pokemon-back:/var/www/html
+      - ./pokemon-back:/var/www/html:delegated
+      - ./pokemon-back/var:/var/www/html/var:rw
     networks:
       - pokemon-network
     environment:
       - SYMFONY_ENV=dev
+    command: >
+      bash -c "rm -rf var/cache/* && apache2-foreground"
 
 networks:
   pokemon-network:
