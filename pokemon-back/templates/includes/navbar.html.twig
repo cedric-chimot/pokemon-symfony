@@ -5,12 +5,9 @@
     <a class="navbar-brand text-white mr-4" href="{{ path('app_home') }}">
       <img src="/asset/logoPokemon.png" alt="Pokemon Logo" class="logo-pokemon"> Manager
     </a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse">
+    <div class="navbar">
       <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link text-white" href="#">Admin</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="{{ path('admin') }}">Admin</a></li>
         <li class="nav-item"><a class="nav-link text-white" href="{{ path('app_pokedex_national') }}">Pokedex National</a></li>
         <li class="nav-item"><a class="nav-link text-white" href="#">Stats Pokedex</a></li>
         <li class="nav-item"><a class="nav-link text-white" href="{{ path('app_boites_shiny') }}">Boîtes Shiny</a></li>

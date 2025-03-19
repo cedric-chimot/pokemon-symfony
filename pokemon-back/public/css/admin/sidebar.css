@@ -1,0 +1,58 @@
+.sidebar {
+  width: 220px;
+  background-color: #008080;
+  height: 100vh;
+  padding: 0;
+  position: fixed;
+  top: 60px;
+  left: 0;
+  z-index: 1000; /* S'assurer que la sidebar est au-dessus des autres éléments */
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar li:first-child {
+  margin-top: 25px; /* Espace entre la navbar et le premier élément */
+}
+
+.sidebar li {
+  margin: 5px 10px;
+  padding: 5px;
+  color: #fff;
+  cursor: pointer;
+  border: 1px solid #fff;
+  transition: width 0.3s ease, background-color 0.3s;
+}
+
+.sidebar li.selected {
+  background-color: #04adbf;
+  width: 240px; /* Augmenter la largeur pour l'élément sélectionné */
+}
+
+.sidebar li a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  text-decoration: none;
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 20px;
+  text-align: left;
+  width: 100%;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.sidebar li a .text {
+  flex-grow: 1;
+}
+
+.sidebar li a .icon {
+  font-size: 20px;
+  margin-left: 15px;
+}

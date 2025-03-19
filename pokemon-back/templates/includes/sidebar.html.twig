@@ -1,0 +1,29 @@
+<link rel="stylesheet" href="/css/admin/sidebar.css">
+
+<div class="sidebar">
+  <ul>
+    {% set items = [
+      { name: 'Dashboard', route: 'admin_home', icon: 'fa-solid fa-tachometer-alt' },
+      { name: 'Pokedex', route: 'admin_pokedex', icon: 'fa-solid fa-book' },
+      { name: 'Pokedex-Boites', route: 'admin_boite_pokedex', icon: 'fa-solid fa-box' },
+      { name: 'Shiny', route: 'admin_shiny', icon: 'fa-regular fa-star' },
+      { name: 'Shiny-Boites', route: 'admin_boite_shiny', icon: 'fa-solid fa-box-archive' },
+      { name: 'Attaques', route: 'admin_attaques', icon: 'fa-solid fa-hand-fist' },
+      { name: 'Dresseurs', route: 'admin_dresseurs', icon: 'fa fa-address-card' },
+      { name: 'Natures', route: 'admin_natures', icon: 'fa-solid fa-theater-masks' },
+      { name: 'Pokeballs', route: 'admin_pokeballs', icon: 'fa-solid fa-compact-disc' },
+      { name: 'Régions', route: 'admin_regions', icon: 'fa-solid fa-globe' },
+      { name: 'Sexe', route: 'admin_sexes', icon: 'fa-solid fa-venus-mars' },
+      { name: 'Types', route: 'admin_types', icon: 'fa-solid fa-fire' }
+    ] %}
+
+    {% for item in items %}
+      <li class="{% if app.request.get('_route') == item.route %}selected{% endif %}">
+        <a href="#">
+          <span class="text">{{ item.name }}</span>
+          <i class="{{ item.icon }} icon"></i>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
