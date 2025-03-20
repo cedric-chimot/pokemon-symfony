@@ -13,4 +13,10 @@ class PokedexNationalController extends AbstractController
   {
     return $this->render('pokedex-national/pokedex-national.html.twig');
   }
+
+  #[Route('/admin-pokedex', name: 'admin_pokedex')]
+  public function adminIndex(): Response
+  {
+    return $this->render('pokedex-national/pokedex.html.twig');
+  }
 }
