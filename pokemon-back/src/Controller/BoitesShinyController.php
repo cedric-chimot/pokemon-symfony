@@ -13,4 +13,12 @@ class BoitesShinyController extends AbstractController
   {
     return $this->render('boites-shiny/boites-shiny.html.twig');
   }
+
+  #[Route('/admin-boites-shiny', name: 'admin_boite_shiny')]
+  public function adminIndex(): Response
+  {
+    {
+      return $this->render('admin/boites-shiny.html.twig');
+    }
+  }
 }
