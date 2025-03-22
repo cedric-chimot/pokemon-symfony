@@ -8,12 +8,9 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class TypesController extends AbstractController
 {
-  #[Route('/types', name: 'app_types')]
-  public function index(): JsonResponse
+  #[Route('/admin-types', name: 'admin_types')]
+  public function adminIndex(): Response
   {
-    return $this->json([
-      'message' => 'Welcome to your new controller!',
-      'path' => 'src/Controller/TypesController.php',
-    ]);
+    return $this->render('admin/types.html.twig');
   }
 }
