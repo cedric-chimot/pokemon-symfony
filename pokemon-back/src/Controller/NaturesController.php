@@ -8,12 +8,9 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class NaturesController extends AbstractController
 {
-  #[Route('/natures', name: 'app_natures')]
-  public function index(): JsonResponse
+  #[Route('/admin-natures', name: 'admin_natures')]
+  public function adminIndex(): Response
   {
-    return $this->json([
-      'message' => 'Welcome to your new controller!',
-      'path' => 'src/Controller/NaturesController.php',
-    ]);
+    return $this->render('admin/natures.html.twig');
   }
 }
