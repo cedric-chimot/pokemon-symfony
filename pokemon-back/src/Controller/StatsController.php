@@ -13,4 +13,10 @@ class StatsController extends AbstractController
   {
     return $this->render('stats-pokedex/stats-pokedex.html.twig');
   }
+
+  #[Route('/stats-generales', name: 'app_stats_generales')]
+  public function index2(): Response
+  {
+    return $this->render('stats-generales/stats-generales.html.twig');
+  }
 }
