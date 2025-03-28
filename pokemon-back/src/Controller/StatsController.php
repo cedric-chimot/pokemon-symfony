@@ -20,9 +20,9 @@ class StatsController extends AbstractController
     return $this->render('stats-generales/stats-generales.html.twig');
   }
 
-  #[Route('/stats-generales', name: 'app_stats_boites')]
+  #[Route('/stats-boites', name: 'app_stats_boites')]
   public function index3(): Response
   {
-    return $this->render('stats-generales/stats-boites.html.twig');
+    return $this->render('stats-boites/stats-boites.html.twig');
   }
 }
