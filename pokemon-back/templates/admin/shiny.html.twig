@@ -1,12 +1,91 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Admin shiny{% endblock %}
-
+{% block title %}Liste des Pokémon shiny{% endblock %}
 
 {% block stylesheets %}
   <link rel="stylesheet" href="/css/admin/shiny.css">
 {% endblock %}
 
-{% block content %}
+{% block body %}
+  <div class="admin-container">
+    <h1 class="title">Liste des Pokémon shiny</h1>
 
+    <div class="regions-container">
+      <h2 class="title2">Régions :</h2>
+      <div class="col-12 mb-2">
+        <ul>
+          {% for region, pokemons in shiniesParRegion %}
+            <li><a href="#{{ region }}">{{ region | upper }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+
+    {% for region, pokemons in shiniesParRegion %}
+      <h2 id="{{ region }}">{{ region | upper }}</h2>
+      <div>
+        <table class="table-wrapper">
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <th style="background-color: #008080; color: white;">N°</th>
+                <th style="background-color: #008080; color: white;">Pokémon</th>
+                <th style="background-color: #008080; color: white;">Type 1</th>
+                <th style="background-color: #008080; color: white;">Type 2</th>
+                <th style="background-color: #008080; color: white;">N°ID</th>
+                <th style="background-color: #008080; color: white;">Nom du dresseur</th>
+                <th style="background-color: #008080; color: white;">Attaques</th>
+                <th style="background-color: #008080; color: white;">Nature</th>
+                <th style="background-color: #008080; color: white;">Pokeball</th>
+                <th style="background-color: #008080; color: white;">IV Manquant</th>
+                <th style="background-color: #008080; color: white;">Sexe</th>
+                <th style="background-color: #008080; color: white;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for pokemon in pokemons %}
+                <tr>
+                  <td>{{ pokemon.numDex }}</td>
+                  <td>{{ pokemon.nomPokemon }}</td>
+                  <td style="color: {{ pokemon.type1.getColor() }}">{{ pokemon.type1.nomType }}</td>
+                  <td>
+                    {% if pokemon.type2 %}
+                      <span style="color: {{ pokemon.type2.getColor() }}">{{ pokemon.type2.nomType }}</span>
+                    {% else %}
+                        -
+                    {% endif %}
+                  </td>
+                  <td>{{ pokemon.dresseur.numDresseur }}</td>
+                  <td>{{ pokemon.dresseur.nomDresseur }}</td>
+                  <td>
+                    {% for attaque in [pokemon.attaque1, pokemon.attaque2, pokemon.attaque3, pokemon.attaque4] %}
+                      <div style="color: {{ attaque.getColor() }}">
+                        {{ attaque.nomAttaque }}
+                      </div>
+                    {% endfor %}
+                  </td>
+                  <td>{{ pokemon.nature.nomNature }}</td>
+                  <td>{{ pokemon.pokeball.nomPokeball }}</td>
+                  <td>{{ pokemon.ivManquant }}</td>
+                  <td>
+                    <span style="color: {{ pokemon.sexe.getColor() }}; font-size: 1.7rem;">
+                      {{ pokemon.sexe.getSymbol() }}
+                    </span>
+                  </td>
+                  <td>
+                    <button class="update">
+                      <i class="fa-solid fa-pen-nib"></i>
+                    </button>
+                    <button class="delete">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </table>
+      </div>
+    {% endfor %}
+  </div>
 {% endblock %}

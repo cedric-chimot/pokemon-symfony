@@ -6,6 +6,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use App\Repository\PokemonShinyRepository;
 
 class PokemonsShinyController extends AbstractController
 {
@@ -16,9 +17,21 @@ class PokemonsShinyController extends AbstractController
   }
 
   #[Route('/admin-shiny', name: 'admin_shiny')]
-  public function adminIndex(): Response
+  public function adminIndex(PokemonShinyRepository $shinyRepository): Response
   {
-    return $this->render('admin/shiny.html.twig');
+    // Récupérer tous les Pokémon shiny
+    $shinies = $shinyRepository->findAll();
+
+    // Regrouper par région
+    $shiniesParRegion = [];
+    foreach ($shinies as $pokemon) {
+      $region = $pokemon->getDresseur()->getRegion()->getNomRegion();
+      $shiniesParRegion[$region][] = $pokemon;
+    }
+
+    return $this->render('admin/shiny.html.twig', [
+      'shiniesParRegion' => $shiniesParRegion
+    ]);
   }
 
   #[Route('/api/pokemons/shiny', name: 'api_pokemons_shiny', methods: ['GET'])]
