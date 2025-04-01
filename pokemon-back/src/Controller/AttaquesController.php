@@ -32,10 +32,11 @@ class AttaquesController extends AbstractController
     return $this->json($data);
   }
 
+  #[Route('/all', name: 'admin_attaques', methods: ['GET'])]
   public function page(AttaquesRepository $attaquesRepository): Response
   {
     $attaques = $attaquesRepository->findAll();
-    return $this->render('attaques/index.html.twig', [
+    return $this->render('admin/attaques.html.twig', [
       'attaques' => $attaques,
     ]);
   }
