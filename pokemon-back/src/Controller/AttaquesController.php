@@ -32,6 +32,14 @@ class AttaquesController extends AbstractController
     return $this->json($data);
   }
 
+  public function page(AttaquesRepository $attaquesRepository): Response
+  {
+    $attaques = $attaquesRepository->findAll();
+    return $this->render('attaques/index.html.twig', [
+      'attaques' => $attaques,
+    ]);
+  }
+
   #[Route('/{id}', name: 'show', methods: ['GET'])]
   public function show(Attaques $attaque): JsonResponse
   {
