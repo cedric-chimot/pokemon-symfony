@@ -33,8 +33,6 @@ class PokemonsShinyController extends AbstractController
   #[Route('/create', name: 'api_pokemons_shiny_create', methods: ['POST'])]
   public function create(Request $request, EntityManagerInterface $entityManager, SerializerInterface $serializer): JsonResponse
   {
-    $data = json_decode($request->getContent(), true);
-
     $pokemonShiny = $serializer->deserialize($request->getContent(), PokemonShiny::class, 'json');
 
     $entityManager->persist($pokemonShiny);
@@ -60,5 +58,40 @@ class PokemonsShinyController extends AbstractController
     $entityManager->flush();
 
     return $this->json(['message' => 'Pokemon Shiny supprimé avec succès'], 204);
+  }
+
+  #[Route('/num-dex/{numDex}', name: 'api_pokemons_shiny_by_num_dex', methods: ['GET'])]
+  public function getByNumDex(PokemonShinyRepository $shinyRepository, string $numDex): JsonResponse
+  {
+    $pokemons = $shinyRepository->findByNumDex($numDex);
+    return $this->json($pokemons);
+  }
+
+  #[Route('/boite/{idBoite}', name: 'api_pokemons_shiny_by_boite', methods: ['GET'])]
+  public function getByBoite(PokemonShinyRepository $shinyRepository, int $idBoite): JsonResponse
+  {
+    $pokemons = $shinyRepository->findByBoitePosition($idBoite);
+    return $this->json($pokemons);
+  }
+
+  #[Route('/stats/iv-manquant', name: 'api_pokemons_shiny_stats_iv', methods: ['GET'])]
+  public function getStatsIvManquant(PokemonShinyRepository $shinyRepository): JsonResponse
+  {
+    $stats = $shinyRepository->getStatsIvManquant();
+    return $this->json($stats);
+  }
+
+  #[Route('/region/{idRegion}', name: 'api_pokemons_shiny_by_region', methods: ['GET'])]
+  public function getByRegion(PokemonShinyRepository $shinyRepository, int $idRegion): JsonResponse
+  {
+    $pokemons = $shinyRepository->findByRegion($idRegion);
+    return $this->json($pokemons);
+  }
+
+  #[Route('/count', name: 'api_pokemons_shiny_count', methods: ['GET'])]
+  public function countShiny(PokemonShinyRepository $shinyRepository): JsonResponse
+  {
+    $count = $shinyRepository->countPokemonsShiny();
+    return $this->json(['count' => $count]);
   }
 }
