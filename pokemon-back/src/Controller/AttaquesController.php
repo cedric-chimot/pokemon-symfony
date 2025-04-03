@@ -18,52 +18,51 @@ class AttaquesController extends AbstractController
   #[Route('/', name: 'index', methods: ['GET'])]
   public function index(AttaquesRepository $attaquesRepository): JsonResponse
   {
-    $attaques = $attaquesRepository->findAll();
-    $data = [];
-
-    foreach ($attaques as $attaque) {
-      $data[] = [
-        'id' => $attaque->getId(),
-        'nomAttaque' => $attaque->getNomAttaque(),
-        'type' => $attaque->getType()->getNom(),
-      ];
-    }
+    $attaques = $attaquesRepository->findAllSortedByNom();
+    $data = array_map(fn($attaque) => [
+      'id' => $attaque->getId(),
+      'nomAttaque' => $attaque->getNomAttaque(),
+      'type' => $attaque->getTypeAttaque()->getNomType(),
+    ], $attaques);
 
     return $this->json($data);
   }
 
-  #[Route('/all', name: 'admin_attaques', methods: ['GET'])]
-  public function page(AttaquesRepository $attaquesRepository): Response
+  #[Route('/count', name: 'count', methods: ['GET'])]
+  public function count(AttaquesRepository $attaquesRepository): JsonResponse
   {
-    $attaques = $attaquesRepository->findAll();
-    return $this->render('admin/attaques.html.twig', [
-      'attaques' => $attaques,
-    ]);
+    return $this->json(['total' => $attaquesRepository->countAttaques()]);
   }
 
-  #[Route('/{id}', name: 'show', methods: ['GET'])]
-  public function show(Attaques $attaque): JsonResponse
+  #[Route('/type/{id}', name: 'by_type', methods: ['GET'])]
+  public function findByType(int $id, AttaquesRepository $attaquesRepository): JsonResponse
   {
-    return $this->json([
+    $attaques = $attaquesRepository->findByType($id);
+    $data = array_map(fn($attaque) => [
       'id' => $attaque->getId(),
       'nomAttaque' => $attaque->getNomAttaque(),
-      'type' => $attaque->getType()->getNom(),
-    ]);
+      'type' => $attaque->getTypeAttaque()->getNomType(),
+    ], $attaques);
+
+    return $this->json($data);
+  }
+
+  #[Route('/stats', name: 'stats', methods: ['GET'])]
+  public function stats(AttaquesRepository $attaquesRepository): JsonResponse
+  {
+    return $this->json($attaquesRepository->countAttaquesByType());
   }
 
   #[Route('/create', name: 'create', methods: ['POST'])]
   public function create(Request $request, EntityManagerInterface $em): JsonResponse
   {
     $data = json_decode($request->getContent(), true);
-
     $type = $em->getRepository(Types::class)->find($data['type_id']);
-    if (!$type) {
-      return $this->json(['error' => 'Type not found'], Response::HTTP_NOT_FOUND);
-    }
+    if (!$type) return $this->json(['error' => 'Type not found'], Response::HTTP_NOT_FOUND);
 
     $attaque = new Attaques();
     $attaque->setNomAttaque($data['nomAttaque']);
-    $attaque->setType($type);
+    $attaque->setTypeAttaque($type);
 
     $em->persist($attaque);
     $em->flush();
@@ -75,21 +74,14 @@ class AttaquesController extends AbstractController
   public function update(Request $request, Attaques $attaque, EntityManagerInterface $em): JsonResponse
   {
     $data = json_decode($request->getContent(), true);
-
-    if (isset($data['nomAttaque'])) {
-      $attaque->setNomAttaque($data['nomAttaque']);
-    }
-
+    if (isset($data['nomAttaque'])) $attaque->setNomAttaque($data['nomAttaque']);
     if (isset($data['type_id'])) {
       $type = $em->getRepository(Types::class)->find($data['type_id']);
-      if (!$type) {
-        return $this->json(['error' => 'Type not found'], Response::HTTP_NOT_FOUND);
-      }
-      $attaque->setType($type);
+      if (!$type) return $this->json(['error' => 'Type not found'], Response::HTTP_NOT_FOUND);
+      $attaque->setTypeAttaque($type);
     }
 
     $em->flush();
-
     return $this->json(['message' => 'Attaque mise à jour avec succès']);
   }
 
@@ -98,7 +90,6 @@ class AttaquesController extends AbstractController
   {
     $em->remove($attaque);
     $em->flush();
-
     return $this->json(['message' => 'Attaque supprimée avec succès']);
   }
 }

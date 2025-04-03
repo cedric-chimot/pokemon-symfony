@@ -16,28 +16,55 @@ class AttaquesRepository extends ServiceEntityRepository
     parent::__construct($registry, Attaques::class);
   }
 
-  //    /**
-  //     * @return Attaques[] Returns an array of Attaques objects
-  //     */
-  //    public function findByExampleField($value): array
-  //    {
-  //        return $this->createQueryBuilder('a')
-  //            ->andWhere('a.exampleField = :val')
-  //            ->setParameter('val', $value)
-  //            ->orderBy('a.id', 'ASC')
-  //            ->setMaxResults(10)
-  //            ->getQuery()
-  //            ->getResult()
-  //        ;
-  //    }
+  /**
+   * Récupère toutes les attaques triées par nomAttaque
+   * @return Attaques[]
+   */
+  public function findAllSortedByNom(): array
+  {
+    return $this->createQueryBuilder('a')
+      ->orderBy('a.nomAttaque', 'ASC')
+      ->getQuery()
+      ->getResult();
+  }
 
-  //    public function findOneBySomeField($value): ?Attaques
-  //    {
-  //        return $this->createQueryBuilder('a')
-  //            ->andWhere('a.exampleField = :val')
-  //            ->setParameter('val', $value)
-  //            ->getQuery()
-  //            ->getOneOrNullResult()
-  //        ;
-  //    }
+  /**
+   * Compte le nombre total d'attaques
+   * @return int
+   */
+  public function countAttaques(): int
+  {
+    return (int) $this->createQueryBuilder('a')
+      ->select('COUNT(a.id)')
+      ->getQuery()
+      ->getSingleScalarResult();
+  }
+
+  /**
+   * Récupère les attaques d'un type spécifique
+   * @param int $typeId
+   * @return Attaques[]
+   */
+  public function findByType(int $typeId): array
+  {
+    return $this->createQueryBuilder('a')
+      ->andWhere('a.typeAttaque = :typeId')
+      ->setParameter('typeId', $typeId)
+      ->getQuery()
+      ->getResult();
+  }
+
+  /**
+   * Retourne le nombre d'attaques par type
+   * @return array
+   */
+  public function countAttaquesByType(): array
+  {
+    return $this->createQueryBuilder('a')
+      ->select('t.nomType, COUNT(a.id) AS nombre')
+      ->join('a.typeAttaque', 't')
+      ->groupBy('t.nomType')
+      ->getQuery()
+      ->getResult();
+  }
 }
