@@ -2,23 +2,106 @@
 
 namespace App\Controller;
 
+use App\Entity\Boites;
+use App\Repository\BoitesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Annotation\Route;
 
 class BoitesShinyController extends AbstractController
 {
-  #[Route('/boites-shiny', name: 'app_boites_shiny')]
-  public function index(): Response
+  private BoitesRepository $boitesRepository;
+
+  public function __construct(BoitesRepository $boitesRepository)
   {
-    return $this->render('boites-shiny/boites-shiny.html.twig');
+    $this->boitesRepository = $boitesRepository;
   }
 
-  #[Route('/admin-boites-shiny', name: 'admin_boite_shiny')]
-  public function adminIndex(): Response
+  #[Route('/boites-shiny', name: 'app_boites_shiny', methods: ['GET'])]
+  public function index(): JsonResponse
   {
-    {
-      return $this->render('admin/boites-shiny.html.twig');
+    $boites = $this->boitesRepository->findAll();
+    return $this->json($boites);
+  }
+
+  #[Route('/boites-shiny/{id}', name: 'get_boite', methods: ['GET'])]
+  public function findBoiteById(int $id): JsonResponse
+  {
+    $boite = $this->boitesRepository->find($id);
+    if (!$boite) {
+      return $this->json(['message' => 'Boîte non trouvée'], 404);
     }
+    return $this->json($boite);
+  }
+
+  #[Route('/boites-shiny', name: 'create_boite', methods: ['POST'])]
+  public function save(Request $request): JsonResponse
+  {
+    $data = json_decode($request->getContent(), true);
+    $boite = new Boites();
+    $boite->setNom($data['nom']);
+    $boite->setNbLevel100($data['nbLevel100']);
+
+    $this->boitesRepository->save($boite, true);
+    return $this->json($boite, 201);
+  }
+
+  #[Route('/boites-shiny/{id}', name: 'update_boite', methods: ['PUT'])]
+  public function updateBoite(Request $request, int $id): JsonResponse
+  {
+    $boite = $this->boitesRepository->find($id);
+    if (!$boite) {
+      return $this->json(['message' => 'Boîte non trouvée'], 404);
+    }
+
+    $data = json_decode($request->getContent(), true);
+    $boite->setNom($data['nom']);
+    $boite->setNbLevel100($data['nbLevel100']);
+
+    $this->boitesRepository->save($boite, true);
+    return $this->json($boite);
+  }
+
+  #[Route('/boites-shiny/{id}', name: 'delete_boite', methods: ['DELETE'])]
+  public function deleteById(int $id): JsonResponse
+  {
+    $boite = $this->boitesRepository->find($id);
+    if (!$boite) {
+      return $this->json(['message' => 'Boîte non trouvée'], 404);
+    }
+
+    $this->boitesRepository->remove($boite, true);
+    return $this->json(['message' => 'Boîte supprimée']);
+  }
+
+  #[Route('/boites-shiny/stats/{type}', name: 'stats_globales', methods: ['GET'])]
+  public function getStatsGlobales(string $type): JsonResponse
+  {
+    $stats = match ($type) {
+      'pokeballs' => $this->boitesRepository->allStatsByPokeball(),
+      'dresseurs' => $this->boitesRepository->allStatsByDresseur(),
+      'natures'   => $this->boitesRepository->allStatsByNature(),
+      'sexes'     => $this->boitesRepository->allStatsBySexe(),
+      'types'     => $this->boitesRepository->allStatsByType(),
+      default     => null
+    };
+
+    return $stats ? $this->json($stats) : $this->json(['message' => 'Type inconnu'], 400);
+  }
+
+  #[Route('/boites-shiny/stats/{type}/{id}', name: 'stats_par_boite', methods: ['GET'])]
+  public function getStatsByBoite(string $type, int $id): JsonResponse
+  {
+    $stats = match ($type) {
+      'pokeballs' => $this->boitesRepository->statsByBoitePokeball($id),
+      'dresseurs' => $this->boitesRepository->statsByBoiteDresseur($id),
+      'natures'   => $this->boitesRepository->statsByBoiteNature($id),
+      'sexes'     => $this->boitesRepository->statsByBoiteSexe($id),
+      'types'     => $this->boitesRepository->statsByBoiteType($id),
+      default     => null
+    };
+
+    return $stats ? $this->json($stats) : $this->json(['message' => 'Type inconnu'], 400);
   }
 }
