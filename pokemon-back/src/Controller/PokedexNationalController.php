@@ -16,13 +16,6 @@ class PokedexNationalController extends AbstractController
     return $this->render('pokedex-national/index.html.twig');
   }
 
-  // Afficher la page d'administration du Pokédex
-  #[Route('/admin', name: 'admin_pokedex', methods: ['GET'])]
-  public function adminIndex(): Response
-  {
-    return $this->render('admin/pokedex.html.twig');
-  }
-
   // Récupérer tous les Pokémon du Pokédex National
   #[Route('/all', name: 'get_all_pokedex_pokemon', methods: ['GET'])]
   public function getAllPokemon(): Response
