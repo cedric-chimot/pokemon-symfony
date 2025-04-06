@@ -50,6 +50,18 @@ class AdminController extends AbstractController
     return $this->render('admin/dresseurs.html.twig');
   }
 
+  #[Route('/admin-natures', name: 'admin_natures')]
+  public function adminNatures(): Response
+  {
+    return $this->render('admin/natures.html.twig');
+  }
+
+  #[Route('/admin-pokeballs', name: 'admin_pokeballs')]
+  public function adminPokeballs(): Response
+  {
+    return $this->render('admin/pokeballs.html.twig');
+  }
+
   #[Route('/admin-genres', name: 'admin_genres')]
   public function adminGenres(): Response
   {
