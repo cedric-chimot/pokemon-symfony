@@ -104,4 +104,16 @@ class BoitesShinyController extends AbstractController
 
     return $stats ? $this->json($stats) : $this->json(['message' => 'Type inconnu'], 400);
   }
+
+  public function getRowspanForDex(array $pokemons, int $pokemonNumDex): int
+  {
+    // Compte combien de fois ce Pokémon apparaît dans la liste (même numDex)
+    return count(array_filter($pokemons, fn($pokemon) => $pokemon['numDex'] === $pokemonNumDex));
+  }
+
+  public function getTypeColor(string $type): string
+  {
+    return $this->colorService->getTypeColor($type) ?? '#000000'; // Retourne une couleur par défaut si non trouvé
+  }
+
 }

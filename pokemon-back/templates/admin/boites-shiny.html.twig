@@ -7,5 +7,94 @@
 {% endblock %}
 
 {% block content %}
+  <div class="container-fluid mt-4">
+    <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
+      {# Boîte switcher : liste de boutons pour changer de boîte #}
+      {% for b in boites %}
+        <a href="{{ path('boite_vue', { id: b.id }) }}"
+          class="btn {{ b.id == currentBoiteId ? 'btn-primary' : 'btn-outline-primary' }}">
+          {{ b.nom }}
+        </a>
+      {% endfor %}
+    </div>
 
+    <h2 class="mb-4 text-center" style="color: #008080;">Pokémon {{ boite.nom }}</h2>
+
+    <div class="table-responsive">
+      <table class="table table-bordered table-hover">
+        <thead class="thead-primary">
+          <tr>
+            <th style="background-color: #008080; color: white;">N°</th>
+            <th style="background-color: #008080; color: white;">Pokemon</th>
+            <th style="background-color: #008080; color: white;">Type 1</th>
+            <th style="background-color: #008080; color: white;">Type 2</th>
+            <th style="background-color: #008080; color: white;">N° ID</th>
+            <th style="background-color: #008080; color: white;">PokeBall</th>
+            <th style="background-color: #008080; color: white;">Attaques</th>
+            <th style="background-color: #008080; color: white;">Nature</th>
+            <th style="background-color: #008080; color: white;">Sexe</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for pokemon in pokemons %}
+            <tr>
+              {% set prev = loop.index > 1 ? pokemons[loop.index0 - 1] : null %}
+              {% if loop.first or pokemon.numDex != prev.numDex %}
+                {% set rowspan = get_rowspan(pokemons, pokemon.numDex) %}
+                <td rowspan="{{ rowspan }}" style="background-color: #008080; color: white;">{{ pokemon.numDex }}</td>
+              {% endif %}
+
+              <td style="color: #191973;">{{ pokemon.nomPokemon }}</td>
+
+              <td class="text-center"
+                  colspan="{{ pokemon.type2 is null ? 2 : 1 }}"
+                  style="color: {{ typeColors[pokemon.type1.nomType] ?? '#000000' }}">
+                {{ pokemon.type1.nomType }}
+              </td>
+
+              {% if pokemon.type2 %}
+                <td class="text-center"
+                    style="color: {{ typeColors[pokemon.type2.nomType] ?? '#000000' }}">
+                  {{ pokemon.type2.nomType }}
+                </td>
+              {% endif %}
+
+              <td style="color: #191973;">{{ pokemon.dresseur.numDresseur }}</td>
+              <td style="color: #191973;">{{ pokemon.pokeball.nomPokeball }}</td>
+              <td>
+                {% for attaque in [pokemon.attaque1, pokemon.attaque2, pokemon.attaque3, pokemon.attaque4] %}
+                  {% if attaque %}
+                    <div style="color: {{ attaqueColors[attaque.nomAttaque] ?? '#000000' }}">
+                      {{ attaque.nomAttaque }}
+                    </div>
+                  {% endif %}
+                {% endfor %}
+              </td>
+              <td style="color: #191973;">{{ pokemon.nature.nomNature }}</td>
+              <td>
+                <span style="color: {{ sexeColors[pokemon.sexe.sexe] ?? '#000000' }}; font-size: 1.7rem;">
+                  {{ sexeSymbols[pokemon.sexe.sexe] ?? '?' }}
+                </span>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <div class="col-lg-5 col-md-6 mb-3">
+        <div class="table-responsive mx-auto mt-4">
+          <table class="table table-bordered table-hover" style="line-height: 2;">
+            <tr>
+              <th style="background-color: #008080; color: white;">Nb de pokemon niveau 100 :</th>
+              <td style="background-color: #e5f2f2;">{{ boite.nbLevel100 }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <a href="#" class="btn btn-secondary position-fixed bottom-0 end-0 m-4" style="z-index: 999;">
+      🔝 Haut de page
+    </a>
+  </div>
 {% endblock %}
