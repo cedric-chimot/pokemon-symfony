@@ -1,12 +1,178 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Admin attaques{% endblock %}
-
+{% block title %}Admin Attaques{% endblock %}
 
 {% block stylesheets %}
   <link rel="stylesheet" href="/css/admin/attaques.css">
 {% endblock %}
 
 {% block content %}
-  
+  <div class="admin-container">
+    <h1 class="title">Liste des attaques</h1>
+    <div class="types-container">
+      <div class="col-12 mb-2">
+        {% for type in types[:9] %}
+          <button
+            style="background-color: {{ getTypeColor(type) }}"
+            class="btn m-2"
+            onclick="changeType({{ loop.index }})"
+          >
+            {{ type.nomType }}
+          </button>
+        {% endfor %}
+      </div>
+      <div class="col-12">
+        {% for type in types[9:] %}
+          <button
+            style="background-color: {{ getTypeColor(type) }}"
+            class="btn m-2"
+            onclick="changeType({{ loop.index + 9 }})"
+          >
+            {{ type.nomType }}
+          </button>
+        {% endfor %}
+      </div>
+    </div>
+
+    {% if attacksList|length > 0 %}
+      <div>
+        <table class="table-wrapper">
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <th style="background-color: #008080; color: white">#</th>
+                <th style="background-color: #008080; color: white">Nom de l'attaque</th>
+                <th style="background-color: #008080; color: white">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for attaque in attacksList %}
+                <tr>
+                  <td style="background-color: #008080; color: white">
+                    {{ loop.index + 1 }}
+                  </td>
+                  <td style="color: #191973">{{ attaque.nomAttaque }}</td>
+                  <td>
+                    <button class="update" onclick="openAttaqueModal({{ attaque.id }})">
+                      <i class="fa-solid fa-pen-nib"></i>
+                    </button>
+                    <button class="delete" onclick="openDeleteModal({{ attaque.id }})">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </table>
+      </div>
+    {% endif %}
+
+    <button class="btn add" onclick="openAddModal()">Ajouter</button>
+  </div>
+
+  <!-- Modal pour Ajouter ou Modifier une Attaque -->
+  <div id="attaqueModal" class="modal">
+    <div class="modal-content">
+      <h2 id="modalTitle">Ajouter une Attaque</h2>
+      <form id="attaqueForm">
+        <div>
+          <label for="nomAttaque">Nom de l'attaque</label>
+          <input type="text" id="nomAttaque" name="nomAttaque" required />
+        </div>
+        <div>
+          <label for="typeAttaque">Type</label>
+          <select id="typeAttaque" name="typeAttaque">
+            {% for type in types %}
+              <option value="{{ type.id }}">{{ type.nomType }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <button type="submit" class="btn">Sauvegarder</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal pour la Suppression -->
+  <div id="deleteModal" class="modal">
+    <div class="modal-content">
+      <h2>Confirmer la suppression</h2>
+      <p>Êtes-vous sûr de vouloir supprimer cette attaque ?</p>
+      <button class="btn" id="confirmDeleteBtn">Confirmer</button>
+      <button class="btn" onclick="closeModal('deleteModal')">Annuler</button>
+    </div>
+  </div>
+
+  <script>
+    let selectedAttackId = null;
+
+    // Fonction pour ouvrir le modal d'ajout
+    function openAddModal() {
+      document.getElementById("modalTitle").innerText = "Ajouter une Attaque";
+      document.getElementById("attaqueForm").reset();
+      document.getElementById("attaqueModal").style.display = "block";
+    }
+
+    // Fonction pour ouvrir le modal d'édition
+    function openAttaqueModal(id) {
+      // Ici on va récupérer les données de l'attaque via l'API pour la modifier
+      fetch(`/attaques/${id}`)
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById("modalTitle").innerText = "Modifier l'Attaque";
+          document.getElementById("nomAttaque").value = data.nomAttaque;
+          document.getElementById("typeAttaque").value = data.type.id;
+          selectedAttackId = id;
+          document.getElementById("attaqueModal").style.display = "block";
+        });
+    }
+
+    // Fonction pour fermer un modal
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = "none";
+    }
+
+    // Fonction pour ouvrir le modal de suppression
+    function openDeleteModal(id) {
+      selectedAttackId = id;
+      document.getElementById("deleteModal").style.display = "block";
+    }
+
+    // Fonction pour confirmer la suppression
+    document.getElementById("confirmDeleteBtn").addEventListener("click", function() {
+      fetch(`/attaques/delete/${selectedAttackId}`, { method: "DELETE" })
+        .then(response => response.json())
+        .then(() => {
+          alert("Attaque supprimée avec succès.");
+          location.reload(); // Recharge la page après suppression
+        });
+    });
+
+    // Soumettre le formulaire d'ajout ou de modification
+    document.getElementById("attaqueForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const formData = new FormData(event.target);
+      const data = {
+        nomAttaque: formData.get("nomAttaque"),
+        type_id: formData.get("typeAttaque"),
+      };
+
+      let method = selectedAttackId ? "PUT" : "POST";
+      let url = selectedAttackId ? `/attaques/update/${selectedAttackId}` : "/attaques/create";
+
+      fetch(url, {
+        method: method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+      .then(response => response.json())
+      .then(() => {
+        alert("Attaque sauvegardée avec succès.");
+        location.reload(); // Recharge la page après l'ajout ou la modification
+      });
+    });
+  </script>
 {% endblock %}
