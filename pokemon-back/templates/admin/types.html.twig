@@ -8,5 +8,92 @@
 {% endblock %}
 
 {% block content %}
+  <div class="admin-container">
+    <h1 class="title">Pokémons shiny par types</h1>
 
+    {% if typesList|length > 0 %}
+      <div>
+        <table class="table-wrapper">
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <th style="background-color: #008080; color: white;">#</th>
+                <th style="background-color: #008080; color: white;">Type</th>
+                <th style="background-color: #008080; color: white;">Nb Shiny</th>
+                <th style="background-color: #008080; color: white;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for type in typesList %}
+                <tr>
+                  <td style="background-color: #008080; color: white;">{{ type.id }}</td>
+                  <td style="color: #191973;">{{ type.nom }}</td>
+                  <td style="color: #0f52ba;">{{ type.nbShiny }}</td>
+                  <td>
+                    <button class="update" onclick="openTypeModal({{ type.id }})">
+                      <i class="fa-solid fa-pen-nib"></i>
+                    </button>
+                    <button class="delete" onclick="openDeleteTypeModal({{ type.id }})">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </table>
+      </div>
+    {% endif %}
+
+    {# Pagination (si plus de 9 éléments) #}
+    {% if typesList|length > 9 %}
+      {# À adapter avec ton système de pagination Symfony si tu en as un #}
+      <div class="pagination">
+        {# Exemple basique sans composant #}
+        {% for i in 1..totalPages %}
+          <a href="?page={{ i }}" class="{{ currentPage == i ? 'active' : '' }}">{{ i }}</a>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {# Modal de modification #}
+    {% if selectedType is defined %}
+      <div class="modal">
+        <div class="modal-content">
+          <h2>Modifier le type</h2>
+          <form method="post" action="{{ path('types_update', { id: selectedType.id }) }}">
+            <div>
+              <label for="nomType">Type</label>
+              <input type="text" id="nomType" value="{{ selectedType.nom }}" name="nomType" disabled>
+            </div>
+            <div>
+              <label for="nbShiny">Nb de Shiny</label>
+              <input type="number" id="nbShiny" value="{{ selectedType.nbShiny }}" name="nbShiny" required>
+            </div>
+            <div style="text-align: center; margin-top: 1rem;">
+              <button class="button" type="submit">Mettre à jour</button>
+              <button class="delBtn" type="button" onclick="closeModal()">Fermer</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    {% endif %}
+
+    {# Modal de suppression #}
+    {% if selectedTypeForDelete is defined %}
+      <div class="modal">
+        <div class="modal-content">
+          <h2>Voulez-vous réellement supprimer ce Type ?</h2>
+          <p>Le Type <strong>{{ selectedTypeForDelete.nom }}</strong> sera définitivement supprimé.</p>
+          <p class="confirm">Confirmer la suppression ?</p>
+          <div style="text-align: center;">
+            <form method="post" action="{{ path('types_delete', { id: selectedTypeForDelete.id }) }}">
+              <button class="button" type="submit">Confirmer</button>
+              <button class="delBtn" type="button" onclick="closeModal()">Annuler</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
 {% endblock %}
