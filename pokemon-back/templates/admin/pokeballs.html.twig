@@ -1,12 +1,101 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Admin pokeballs{% endblock %}
-
+{% block title %}Admin Pokéballs{% endblock %}
 
 {% block stylesheets %}
   <link rel="stylesheet" href="/css/admin/pokeballs.css">
 {% endblock %}
 
 {% block content %}
+  <div class="admin-container">
+    <h1 class="title">Pokémons par pokéballs</h1>
 
+    {% if pokeballsList|length > 0 %}
+      <div>
+        <div class="table-wrapper">
+          <table class="table table-bordered table-hover">
+            <thead>
+              <tr>
+                <th style="background-color: #008080; color: white;">#</th>
+                <th style="background-color: #008080; color: white;">Pokéball</th>
+                <th style="background-color: #008080; color: white;">Nb Pokémons</th>
+                <th style="background-color: #008080; color: white;">Nb Shiny</th>
+                <th style="background-color: #008080; color: white;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for pokeball in pokeballsList %}
+                <tr>
+                  <td style="background-color: #008080; color: white;">{{ pokeball.id }}</td>
+                  <td style="color: #191973;">{{ pokeball.nomPokeball }}</td>
+                  <td style="color: #0f52ba;">{{ pokeball.nbPokemon }}</td>
+                  <td style="color: #e94152;">{{ pokeball.nbShiny }}</td>
+                  <td>
+                    <button class="update" onclick="openPokeballModal({{ pokeball.id }})">
+                      <i class="fa-solid fa-pen-nib"></i>
+                    </button>
+                    <button class="delete" onclick="openDeleteModal({{ pokeball.id }})">
+                      <i class="fa-solid fa-trash"></i>
+                    </button>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if pokeballsList|length > 10 %}
+      {# Inclure ici une pagination custom si tu en as une #}
+      {{ include('pagination.html.twig', {
+        currentPage: currentPage,
+        totalPages: totalPages
+      }) }}
+    {% endif %}
+
+    {# Modal modification pokeball #}
+    {% if isPokeballModalOpen %}
+      <div class="modal">
+        <div class="modal-content">
+          <h2>Modifier la pokéball</h2>
+          <form method="post" action="{{ path('update_pokeball') }}" style="display: flex; flex-direction: column; gap: 1rem;">
+            <div>
+              <label for="nomPokeball">Pokéball</label>
+              <input type="text" id="nomPokeball" name="nomPokeball" value="{{ selectedPokeball.nomPokeball }}" disabled>
+            </div>
+            <div>
+              <label for="nbPokemon">Nb de Pokémons</label>
+              <input type="number" id="nbPokemon" name="nbPokemon" value="{{ selectedPokeball.nbPokemon }}" required>
+            </div>
+            <div>
+              <label for="nbShiny">Nb de Shiny</label>
+              <input type="number" id="nbShiny" name="nbShiny" value="{{ selectedPokeball.nbShiny }}" required>
+            </div>
+            <div style="text-align: center; margin-top: 1rem;">
+              <button class="button" type="submit">Mettre à jour</button>
+              <button class="delBtn" type="button" onclick="closeModal()">Fermer</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    {% endif %}
+
+    {# Modal suppression pokeball #}
+    {% if isDeleteModalOpen %}
+      <div class="modal">
+        <div class="modal-content">
+          <h2 class="title">Voulez-vous réellement supprimer cette Pokéball ?</h2>
+          <p>La pokéball <strong>{{ selectedPokeballForDelete.nomPokeball }}</strong> sera définitivement supprimée.</p>
+          <p class="confirm">Confirmer la suppression ?</p>
+          <div style="text-align: center;">
+            <form method="post" action="{{ path('delete_pokeball', { id: selectedPokeballForDelete.id }) }}">
+              <button class="button" type="submit">Confirmer</button>
+              <button class="delBtn" type="button" onclick="closeModal()">Annuler</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
 {% endblock %}
