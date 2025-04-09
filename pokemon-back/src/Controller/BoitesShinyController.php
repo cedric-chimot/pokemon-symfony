@@ -32,6 +32,7 @@ class BoitesShinyController extends AbstractController
     if (!$boite) {
       return $this->json(['message' => 'Boîte non trouvée'], 404);
     }
+
     return $this->json($boite);
   }
 
@@ -39,11 +40,13 @@ class BoitesShinyController extends AbstractController
   public function save(Request $request): JsonResponse
   {
     $data = json_decode($request->getContent(), true);
+
     $boite = new Boites();
-    $boite->setNom($data['nom']);
-    $boite->setNbLevel100($data['nbLevel100']);
+    $boite->setNom($data['nom'] ?? '');
+    $boite->setNbLevel100($data['nbLevel100'] ?? 0);
 
     $this->boitesRepository->save($boite, true);
+
     return $this->json($boite, 201);
   }
 
@@ -52,14 +55,15 @@ class BoitesShinyController extends AbstractController
   {
     $boite = $this->boitesRepository->find($id);
     if (!$boite) {
-      return $this->json(['message' => 'Boîte non trouvée'], 404);
+        return $this->json(['message' => 'Boîte non trouvée'], 404);
     }
 
     $data = json_decode($request->getContent(), true);
-    $boite->setNom($data['nom']);
-    $boite->setNbLevel100($data['nbLevel100']);
+    $boite->setNom($data['nom'] ?? $boite->getNom());
+    $boite->setNbLevel100($data['nbLevel100'] ?? $boite->getNbLevel100());
 
     $this->boitesRepository->save($boite, true);
+
     return $this->json($boite);
   }
 
@@ -104,16 +108,4 @@ class BoitesShinyController extends AbstractController
 
     return $stats ? $this->json($stats) : $this->json(['message' => 'Type inconnu'], 400);
   }
-
-  public function getRowspanForDex(array $pokemons, int $pokemonNumDex): int
-  {
-    // Compte combien de fois ce Pokémon apparaît dans la liste (même numDex)
-    return count(array_filter($pokemons, fn($pokemon) => $pokemon['numDex'] === $pokemonNumDex));
-  }
-
-  public function getTypeColor(string $type): string
-  {
-    return $this->colorService->getTypeColor($type) ?? '#000000'; // Retourne une couleur par défaut si non trouvé
-  }
-
 }
