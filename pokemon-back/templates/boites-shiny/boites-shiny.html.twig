@@ -7,5 +7,91 @@
 {% endblock %}
 
 {% block content %}
+<div class="container-fluid mt-4">
+  <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
+    {# Composant de sélection des boîtes — à remplacer par un <select> ou un composant custom si besoin #}
+    <div>
+      <form method="get" action="">
+        <select name="boite" class="form-select" onchange="this.form.submit()">
+          {% for b in boites %}
+            <option value="{{ b.id }}" {% if b.id == currentBoiteId %}selected{% endif %}>{{ b.nom }}</option>
+          {% endfor %}
+        </select>
+      </form>
+    </div>
+  </div>
 
+  <h2 class="mb-4 text-center" style="color: #008080;">Pokémon {{ currentBoiteName }}</h2>
+
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead class="thead-primary">
+        <tr>
+          <th style="background-color: #008080; color: white;">N°</th>
+          <th style="background-color: #008080; color: white;">Pokemon</th>
+          <th style="background-color: #008080; color: white;">Type 1</th>
+          <th style="background-color: #008080; color: white;">Type 2</th>
+          <th style="background-color: #008080; color: white;">N° ID</th>
+          <th style="background-color: #008080; color: white;">PokeBall</th>
+          <th style="background-color: #008080; color: white;">Attaques</th>
+          <th style="background-color: #008080; color: white;">Nature</th>
+          <th style="background-color: #008080; color: white;">Sexe</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for pokemon in pokemonList %}
+          <tr>
+            {% if loop.index0 == 0 or pokemon.numDex != pokemonList[loop.index0 - 1].numDex %}
+              <td rowspan="{{ pokemonDexCounts[pokemon.numDex] }}" style="background-color: #008080; color: white;">{{ pokemon.numDex }}</td>
+            {% endif %}
+
+            <td style="color: #191973;">{{ pokemon.nomPokemon }}</td>
+
+            <td style="color: {{ typeColors[pokemon.type1.nomType]|default('#000000') }}" class="text-center"
+                {% if not pokemon.type2 %}colspan="2"{% endif %}>
+              {{ pokemon.type1.nomType }}
+            </td>
+
+            {% if pokemon.type2 %}
+              <td style="color: {{ typeColors[pokemon.type2.nomType]|default('#000000') }}" class="text-center">
+                {{ pokemon.type2.nomType }}
+              </td>
+            {% endif %}
+
+            <td style="color: #191973;">{{ pokemon.dresseur.numDresseur }}</td>
+            <td style="color: #191973;">{{ pokemon.pokeball.nomPokeball }}</td>
+
+            <td>
+              {% for attaque in [pokemon.attaque1, pokemon.attaque2, pokemon.attaque3, pokemon.attaque4] %}
+                <div style="color: {{ attaqueColors[attaque.nomAttaque]|default('#000000') }}">{{ attaque.nomAttaque }}</div>
+              {% endfor %}
+            </td>
+
+            <td style="color: #191973;">{{ pokemon.nature.nomNature }}</td>
+            <td>
+              <span style="color: {{ sexeColors[pokemon.sexe.sexe]|default('#000000') }}; font-size: 1.7rem;">
+                {{ sexeSymbols[pokemon.sexe.sexe]|default('?') }}
+              </span>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col-lg-5 col-md-6 mb-3">
+    <div class="table-responsive mx-auto mt-4">
+      <table class="table table-bordered table-hover" style="line-height: 2;">
+        <tr>
+          <th style="background-color: #008080; color: white;">Nb de pokemon niveau 100 :</th>
+          <td style="background-color: #e5f2f2;">{{ nbLevel100 }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <a href="#top" class="btn btn-primary rounded-circle position-fixed bottom-0 end-0 m-4" style="z-index: 1000;">
+    ↑
+  </a>
+</div>
 {% endblock %}

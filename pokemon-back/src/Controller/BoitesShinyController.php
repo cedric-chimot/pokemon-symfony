@@ -35,7 +35,7 @@ class BoitesShinyController extends AbstractController
     return $this->json($boite);
   }
 
-  #[Route('/boites-shiny', name: 'create_boite', methods: ['POST'])]
+  #[Route('/boites-shiny', name: 'app_boites_shiny_create', methods: ['POST'])]
   public function save(Request $request): JsonResponse
   {
     $data = json_decode($request->getContent(), true);
