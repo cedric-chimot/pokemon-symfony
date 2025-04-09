@@ -8,14 +8,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use App\Service\ColorsService;
+use Symfony\Component\HttpFoundation\Response;
 
 class BoitesShinyController extends AbstractController
 {
   private BoitesRepository $boitesRepository;
+  private ColorsService $colorsService;
 
-  public function __construct(BoitesRepository $boitesRepository)
+  public function __construct(BoitesRepository $boitesRepository, ColorsService $colorsService)
   {
     $this->boitesRepository = $boitesRepository;
+    $this->colorsService = $colorsService;
   }
 
   #[Route('/boites-shiny', name: 'app_boites_shiny', methods: ['GET'])]
@@ -91,7 +95,24 @@ class BoitesShinyController extends AbstractController
       default     => null
     };
 
-    return $stats ? $this->json($stats) : $this->json(['message' => 'Type inconnu'], 400);
+    if (!$stats) {
+      return $this->json(['message' => 'Type inconnu'], 400);
+    }
+
+    // Ajouter les couleurs si c’est types ou natures
+    if ($type === 'types') {
+      foreach ($stats as &$stat) {
+        $stat['couleur'] = $this->colorsService->getColorByType($stat['label']);
+      }
+    }
+
+    if ($type === 'natures') {
+      foreach ($stats as &$stat) {
+        $stat['couleur'] = $this->colorsService->getColorByNature($stat['label']);
+      }
+    }
+
+    return $this->json($stats);
   }
 
   #[Route('/boites-shiny/stats/{type}/{id}', name: 'stats_par_boite', methods: ['GET'])]
