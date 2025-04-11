@@ -2,11 +2,77 @@
 
 {% block title %}Admin dresseurs{% endblock %}
 
-
 {% block stylesheets %}
   <link rel="stylesheet" href="/css/admin/dresseurs.css">
 {% endblock %}
 
 {% block content %}
+<div class="admin-container">
+  <h1 class="title">Pokémons par dresseurs - {{ nomRegionDresseur|upper }}</h1>
 
+  <div class="regions-container">
+    <h2 class="title2">Régions :</h2>
+    <div class="col-12 mb-2">
+      <a href="{{ path('admin_dresseurs', {'region': 1}) }}"><button class="btn btn-dresseurs1">1G/6G</button></a>
+      <a href="{{ path('admin_dresseurs', {'region': 2}) }}"><button class="btn btn-dresseurs2">Alola/Galar/Hisui</button></a>
+      <a href="{{ path('admin_dresseurs', {'region': 3}) }}"><button class="btn btn-dresseurs3">Paldea</button></a>
+    </div>
+  </div>
+
+  {% if dresseursList|length > 0 %}
+    <div>
+      <table class="table-wrapper">
+        <table class="table table-bordered table-hover">
+          <thead>
+            <tr>
+              <th style="background-color: #008080; color: white;">#</th>
+              <th style="background-color: #008080; color: white;">N° Id</th>
+              <th style="background-color: #008080; color: white;">Nom du dresseur</th>
+              <th style="background-color: #008080; color: white;">Nb Pokémon</th>
+              <th style="background-color: #008080; color: white;">Nb Shiny</th>
+              <th style="background-color: #008080; color: white;">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for dresseur in dresseursList %}
+              <tr>
+                <td style="background-color: #008080; color: white;">{{ (currentPage - 1) * dresseursParPage + loop.index }}</td>
+
+                {% if dresseur.nomDresseur == 'Event' %}
+                  <td colspan="2" style="color: #191973;">{{ dresseur.nomDresseur }}</td>
+                {% else %}
+                  <td style="color: #191973;">{{ dresseur.numDresseur }}</td>
+                  <td style="color: #191973;">{{ dresseur.nomDresseur }}</td>
+                {% endif %}
+
+                <td style="color: #0f52ba;">{{ dresseur.nbPokemon }}</td>
+                <td style="color: #e94152;">{{ dresseur.nbShiny }}</td>
+                <td>
+                  <a href="{{ path('admin_dresseur_edit', { id: dresseur.id }) }}">
+                    <button class="update"><i class="fa-solid fa-pen-nib"></i></button>
+                  </a>
+                  <a href="{{ path('admin_dresseur_delete', { id: dresseur.id }) }}">
+                    <button class="delete"><i class="fa-solid fa-trash"></i></button>
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </table>
+    </div>
+  {% endif %}
+
+  <a href="{{ path('admin_dresseur_add') }}">
+    <button class="btn add">Ajouter</button>
+  </a>
+
+  <div class="pagination">
+    {% for i in 1..nbPages %}
+      <a href="{{ path('admin_dresseurs', {'page': i, 'region': currentRegion}) }}">
+        <button class="btn {% if i == currentPage %}btn-active{% endif %}">{{ i }}</button>
+      </a>
+    {% endfor %}
+  </div>
+</div>
 {% endblock %}
