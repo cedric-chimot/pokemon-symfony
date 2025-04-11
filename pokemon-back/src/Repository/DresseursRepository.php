@@ -6,9 +6,6 @@ use App\Entity\Dresseurs;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<Dresseurs>
- */
 class DresseursRepository extends ServiceEntityRepository
 {
   public function __construct(ManagerRegistry $registry)
@@ -16,10 +13,22 @@ class DresseursRepository extends ServiceEntityRepository
     parent::__construct($registry, Dresseurs::class);
   }
 
-  /**
-   * Dresseurs avec nbPokemon > 0 et nom != 'Event'
-   * @return Dresseurs[]
-   */
+  public function save(Dresseurs $entity, bool $flush = false): void
+  {
+    $this->_em->persist($entity);
+    if ($flush) {
+      $this->_em->flush();
+    }
+  }
+
+  public function remove(Dresseurs $entity, bool $flush = false): void
+  {
+    $this->_em->remove($entity);
+    if ($flush) {
+      $this->_em->flush();
+    }
+  }
+
   public function findAllDresseursReduit(): array
   {
     return $this->createQueryBuilder('d')
@@ -30,80 +39,31 @@ class DresseursRepository extends ServiceEntityRepository
       ->getResult();
   }
 
-  /**
-   * Dresseurs de la région 1 (non découpés)
-   * @return Dresseurs[]
-   */
-  public function findAllDresseursByRegion1(): array
+  public function findAllDresseursByRegion(int $regionId): array
   {
     return $this->createQueryBuilder('d')
-      ->where('d.regionDresseur IS NOT NULL')
-      ->andWhere('d.regionDresseur.idRegionDresseur = 1')
+      ->where('d.regionDresseur.idRegionDresseur = :region')
       ->andWhere('d.nbPokemon > 0')
+      ->setParameter('region', $regionId)
       ->getQuery()
       ->getResult();
   }
 
-  /**
-   * Dresseurs région 1 - Partie 1 (id 1 à 40)
-   * @return Dresseurs[]
-   */
-  public function findAllDresseursByRegion1Part1(): array
+  public function findDresseursByRegionAndPart(int $regionId, int $minId, int $maxId): array
   {
     return $this->createQueryBuilder('d')
-      ->where('d.regionDresseur.idRegionDresseur = 1')
-      ->andWhere('d.id BETWEEN 1 AND 40')
+      ->where('d.regionDresseur.idRegionDresseur = :region')
+      ->andWhere('d.id BETWEEN :minId AND :maxId')
       ->andWhere('d.nbPokemon > 0')
+      ->setParameters([
+        'region' => $regionId,
+        'minId' => $minId,
+        'maxId' => $maxId,
+      ])
       ->getQuery()
       ->getResult();
   }
 
-  /**
-   * Dresseurs région 1 - Partie 2 (id 41 à 81)
-   * @return Dresseurs[]
-   */
-  public function findAllDresseursByRegion1Part2(): array
-  {
-    return $this->createQueryBuilder('d')
-      ->where('d.regionDresseur.idRegionDresseur = 1')
-      ->andWhere('d.id BETWEEN 41 AND 81')
-      ->andWhere('d.nbPokemon > 0')
-      ->getQuery()
-      ->getResult();
-  }
-
-  /**
-   * Dresseurs de la région 2
-   * @return Dresseurs[]
-   */
-  public function findAllDresseursRegion2(): array
-  {
-    return $this->createQueryBuilder('d')
-      ->where('d.regionDresseur.idRegionDresseur = 2')
-      ->andWhere('d.regionDresseur IS NOT NULL')
-      ->andWhere('d.nbPokemon > 0')
-      ->getQuery()
-      ->getResult();
-  }
-
-  /**
-   * Dresseurs de la région 3
-   * @return Dresseurs[]
-   */
-  public function findAllDresseursRegion3(): array
-  {
-    return $this->createQueryBuilder('d')
-      ->where('d.regionDresseur.idRegionDresseur = 3')
-      ->andWhere('d.regionDresseur IS NOT NULL')
-      ->andWhere('d.nbPokemon > 0')
-      ->getQuery()
-      ->getResult();
-  }
-
-  /**
-   * Compter les dresseurs (hors id 119 à 140, et nbPokemon > 0)
-   * @return int
-   */
   public function countDresseurs(): int
   {
     return (int) $this->createQueryBuilder('d')
