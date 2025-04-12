@@ -6,6 +6,7 @@ use App\Repository\DresseursRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: DresseursRepository::class)]
 class Dresseurs
@@ -13,39 +14,48 @@ class Dresseurs
   #[ORM\Id]
   #[ORM\GeneratedValue]
   #[ORM\Column]
+  #[Groups(['dresseur:list', 'dresseur:detail'])]
   private ?int $id = null;
 
   #[ORM\Column(length: 255)]
+  #[Groups(['dresseur:list', 'dresseur:detail'])]
   private ?string $numDresseur = null;
 
   #[ORM\Column(length: 255)]
+  #[Groups(['dresseur:list', 'dresseur:detail'])]
   private ?string $nomDresseur = null;
 
   #[ORM\Column]
+  #[Groups(['dresseur:list', 'dresseur:detail'])]
   private ?int $nbPokemon = null;
 
   #[ORM\Column(nullable: true)]
+  #[Groups(['dresseur:detail'])]
   private ?int $nbShiny = null;
 
   #[ORM\ManyToOne(inversedBy: 'dresseurs')]
+  #[Groups(['dresseur:detail'])]
   private ?RegionDresseur $regionDresseur = null;
 
   /**
    * @var Collection<int, PokemonShiny>
    */
   #[ORM\OneToMany(targetEntity: PokemonShiny::class, mappedBy: 'dresseur')]
+  #[Groups(['dresseur:detail'])]
   private Collection $shinyList;
 
   /**
    * @var Collection<int, PokedexNational>
    */
   #[ORM\OneToMany(targetEntity: PokedexNational::class, mappedBy: 'dresseur')]
+  #[Groups(['dresseur:detail'])]
   private Collection $pokemonList;
 
   /**
    * @var Collection<int, BoiteShinyDresseur>
    */
   #[ORM\OneToMany(targetEntity: BoiteShinyDresseur::class, mappedBy: 'dresseur')]
+  #[Groups(['dresseur:detail'])]
   private Collection $boiteShinyDresseurs;
 
   public function __construct()
@@ -54,7 +64,7 @@ class Dresseurs
     $this->pokemonList = new ArrayCollection();
     $this->boiteShinyDresseurs = new ArrayCollection();
   }
-
+  
   public function getId(): ?int
   {
     return $this->id;

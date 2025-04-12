@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\PokedexNationalRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PokedexNationalRepository::class)]
 class PokedexNational
@@ -11,32 +12,40 @@ class PokedexNational
   #[ORM\Id]
   #[ORM\GeneratedValue]
   #[ORM\Column]
+  #[Groups(['pokedex:read'])]
   private ?int $id = null;
 
   #[ORM\Column(length: 255)]
+  #[Groups(['pokedex:read'])]
   private ?string $numDex = null;
 
   #[ORM\Column(length: 255)]
+  #[Groups(['pokedex:read'])]
   private ?string $nomPokemon = null;
 
   #[ORM\ManyToOne(inversedBy: 'pokemonList')]
   #[ORM\JoinColumn(nullable: false)]
+  #[Groups(['pokedex:read'])]
   private ?Natures $nature = null;
 
   #[ORM\ManyToOne(inversedBy: 'pokemonList')]
   #[ORM\JoinColumn(nullable: false)]
+  #[Groups(['pokedex:read'])]
   private ?Dresseurs $dresseur = null;
 
   #[ORM\ManyToOne(inversedBy: 'pokemonList')]
   #[ORM\JoinColumn(nullable: false)]
+  #[Groups(['pokedex:read'])]
   private ?Pokeballs $pokeball = null;
 
   #[ORM\ManyToOne(inversedBy: 'pokemonList')]
   #[ORM\JoinColumn(nullable: false)]
+  #[Groups(['pokedex:read'])]
   private ?BoitePokedexNational $boitePokedex = null;
 
   #[ORM\ManyToOne(inversedBy: 'pokemonList')]
   #[ORM\JoinColumn(nullable: false)]
+  #[Groups(['pokedex:read'])]
   private ?Regions $region = null;
 
   public function getId(): ?int

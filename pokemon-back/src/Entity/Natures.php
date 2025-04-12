@@ -6,6 +6,7 @@ use App\Repository\NaturesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: NaturesRepository::class)]
 class Natures
@@ -13,33 +14,40 @@ class Natures
   #[ORM\Id]
   #[ORM\GeneratedValue]
   #[ORM\Column]
+  #[Groups(['nature:read', 'nature:write'])]
   private ?int $id = null;
 
   #[ORM\Column(length: 255)]
+  #[Groups(['nature:read', 'nature:write'])]
   private ?string $nomNature = null;
 
   #[ORM\Column]
+  #[Groups(['nature:read', 'nature:write'])]
   private ?int $nbPokemon = null;
 
   #[ORM\Column(nullable: true)]
+  #[Groups(['nature:read', 'nature:write'])]
   private ?int $nbShiny = null;
 
   /**
    * @var Collection<int, PokemonShiny>
    */
   #[ORM\OneToMany(targetEntity: PokemonShiny::class, mappedBy: 'nature')]
+  #[Groups(['nature:read'])]
   private Collection $shinyList;
 
   /**
    * @var Collection<int, PokedexNational>
    */
   #[ORM\OneToMany(targetEntity: PokedexNational::class, mappedBy: 'nature')]
+  #[Groups(['nature:read'])]
   private Collection $pokemonList;
 
   /**
    * @var Collection<int, BoiteShinyNature>
    */
   #[ORM\OneToMany(targetEntity: BoiteShinyNature::class, mappedBy: 'nature')]
+  #[Groups(['nature:read'])]
   private Collection $boiteShinyNatures;
 
   public function __construct()
@@ -111,7 +119,6 @@ class Natures
   public function removeShiny(PokemonShiny $shinyList): static
   {
     if ($this->shinyList->removeElement($shinyList)) {
-      // set the owning side to null (unless already changed)
       if ($shinyList->getNature() === $this) {
         $shinyList->setNature(null);
       }
@@ -141,7 +148,6 @@ class Natures
   public function removePokemon(PokedexNational $pokemonList): static
   {
     if ($this->pokemonList->removeElement($pokemonList)) {
-      // set the owning side to null (unless already changed)
       if ($pokemonList->getNature() === $this) {
         $pokemonList->setNature(null);
       }
@@ -171,7 +177,6 @@ class Natures
   public function removeBoiteShinyNature(BoiteShinyNature $boiteShinyNature): static
   {
     if ($this->boiteShinyNatures->removeElement($boiteShinyNature)) {
-        // set the owning side to null (unless already changed)
       if ($boiteShinyNature->getNature() === $this) {
         $boiteShinyNature->setNature(null);
       }

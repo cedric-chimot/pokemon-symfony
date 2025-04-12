@@ -1,11 +1,14 @@
 <?php
 
+// src/Entity/Pokeballs.php
+
 namespace App\Entity;
 
 use App\Repository\PokeballsRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: PokeballsRepository::class)]
 class Pokeballs
@@ -13,33 +16,40 @@ class Pokeballs
   #[ORM\Id]
   #[ORM\GeneratedValue]
   #[ORM\Column]
+  #[Groups(['pokeball:read', 'pokemon:read'])]
   private ?int $id = null;
 
   #[ORM\Column(length: 255)]
+  #[Groups(['pokeball:read', 'pokemon:read'])]
   private ?string $nomPokeball = null;
 
   #[ORM\Column]
+  #[Groups(['pokeball:read'])]
   private ?int $nbPokemon = null;
 
   #[ORM\Column(nullable: true)]
+  #[Groups(['pokeball:read'])]
   private ?int $nbShiny = null;
 
   /**
    * @var Collection<int, PokemonShiny>
    */
   #[ORM\OneToMany(targetEntity: PokemonShiny::class, mappedBy: 'pokeball')]
+  #[Groups(['pokeball:read'])]
   private Collection $shinyList;
 
   /**
    * @var Collection<int, PokedexNational>
    */
   #[ORM\OneToMany(targetEntity: PokedexNational::class, mappedBy: 'pokeball')]
+  #[Groups(['pokeball:read'])]
   private Collection $pokemonList;
 
   /**
    * @var Collection<int, BoiteShinyPokeball>
    */
   #[ORM\OneToMany(targetEntity: BoiteShinyPokeball::class, mappedBy: 'pokeball')]
+  #[Groups(['pokeball:read'])]
   private Collection $boiteShinyPokeballs;
 
   public function __construct()
@@ -111,7 +121,6 @@ class Pokeballs
   public function removeShiny(PokemonShiny $shinyList): static
   {
     if ($this->shinyList->removeElement($shinyList)) {
-      // set the owning side to null (unless already changed)
       if ($shinyList->getPokeball() === $this) {
         $shinyList->setPokeball(null);
       }
@@ -141,7 +150,6 @@ class Pokeballs
   public function removePokemon(PokedexNational $pokemonList): static
   {
     if ($this->pokemonList->removeElement($pokemonList)) {
-      // set the owning side to null (unless already changed)
       if ($pokemonList->getPokeball() === $this) {
         $pokemonList->setPokeball(null);
       }
@@ -155,28 +163,27 @@ class Pokeballs
    */
   public function getBoiteShinyPokeballs(): Collection
   {
-      return $this->boiteShinyPokeballs;
+    return $this->boiteShinyPokeballs;
   }
 
   public function addBoiteShinyPokeball(BoiteShinyPokeball $boiteShinyPokeball): static
   {
-      if (!$this->boiteShinyPokeballs->contains($boiteShinyPokeball)) {
-          $this->boiteShinyPokeballs->add($boiteShinyPokeball);
-          $boiteShinyPokeball->setPokeball($this);
-      }
+    if (!$this->boiteShinyPokeballs->contains($boiteShinyPokeball)) {
+      $this->boiteShinyPokeballs->add($boiteShinyPokeball);
+      $boiteShinyPokeball->setPokeball($this);
+    }
 
-      return $this;
+    return $this;
   }
 
   public function removeBoiteShinyPokeball(BoiteShinyPokeball $boiteShinyPokeball): static
   {
-      if ($this->boiteShinyPokeballs->removeElement($boiteShinyPokeball)) {
-          // set the owning side to null (unless already changed)
-          if ($boiteShinyPokeball->getPokeball() === $this) {
-              $boiteShinyPokeball->setPokeball(null);
-          }
+    if ($this->boiteShinyPokeballs->removeElement($boiteShinyPokeball)) {
+      if ($boiteShinyPokeball->getPokeball() === $this) {
+        $boiteShinyPokeball->setPokeball(null);
       }
+    }
 
-      return $this;
+    return $this;
   }
 }
