@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\PokedexNational;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query;
 
 class PokedexNationalRepository extends ServiceEntityRepository
 {
@@ -14,24 +15,22 @@ class PokedexNationalRepository extends ServiceEntityRepository
   }
 
   /**
-   * Trouver tous les Pokémon avec leurs relations
-   * @return PokedexNational[]
+   * Récupère tous les pokémons avec leurs relations (JOIN FETCH en Java)
    */
   public function findAllPokemonsWithRelations(): array
   {
     return $this->createQueryBuilder('p')
-      ->leftJoin('p.naturePokedex', 'n')->addSelect('n')
-      ->leftJoin('p.pokeballPokedex', 'pb')->addSelect('pb')
-      ->leftJoin('p.boitePokedex', 'b')->addSelect('b')
-      ->leftJoin('p.dresseurPokedex', 'd')->addSelect('d')
+      ->addSelect('n', 'pb', 'b', 'd')
+      ->join('p.nature', 'n')
+      ->join('p.pokeball', 'pb')
+      ->join('p.boitePokedex', 'b')
+      ->join('p.dresseur', 'd')
       ->getQuery()
       ->getResult();
   }
 
   /**
-   * Récupérer les Pokémon d’une région donnée
-   * @param int $regionId
-   * @return PokedexNational[]
+   * Récupère les pokémons par région
    */
   public function findByRegion(int $regionId): array
   {
@@ -43,45 +42,42 @@ class PokedexNationalRepository extends ServiceEntityRepository
   }
 
   /**
-   * Pokémon d'une région (version admin avec toutes les relations)
-   * @param int $regionId
-   * @return PokedexNational[]
+   * Récupère les pokémons par région avec toutes les relations (pour admin)
    */
   public function findPokemonsByRegionForAdmin(int $regionId): array
   {
     return $this->createQueryBuilder('p')
-      ->leftJoin('p.naturePokedex', 'n')->addSelect('n')
-      ->leftJoin('p.dresseurPokedex', 'd')->addSelect('d')
-      ->leftJoin('p.pokeballPokedex', 'pb')->addSelect('pb')
-      ->leftJoin('p.boitePokedex', 'b')->addSelect('b')
-      ->leftJoin('p.region', 'r')->addSelect('r')
-      ->where('r.idRegion = :regionId')
+      ->addSelect('n', 'pb', 'b', 'd', 'r')
+      ->join('p.nature', 'n')
+      ->join('p.pokeball', 'pb')
+      ->join('p.boitePokedex', 'b')
+      ->join('p.dresseur', 'd')
+      ->join('p.region', 'r')
+      ->where('r.id = :regionId')
       ->setParameter('regionId', $regionId)
       ->getQuery()
       ->getResult();
   }
 
   /**
-   * Compter tous les Pokémon dans le Pokédex
-   * @return int
+   * Compte le nombre de pokémons total dans le Pokédex
    */
   public function countPokemonsInPokedex(): int
   {
-    return (int) $this->createQueryBuilder('p')
+    return $this->createQueryBuilder('p')
       ->select('COUNT(p.id)')
       ->getQuery()
       ->getSingleScalarResult();
   }
 
   /**
-   * Compter les Pokémon par région
-   * @return array
+   * Nombre de pokémons par région (groupé)
    */
   public function countPokemonsByRegion(): array
   {
     return $this->createQueryBuilder('p')
-      ->select('r.nomRegion, COUNT(p.id) AS nb')
-      ->leftJoin('p.region', 'r')
+      ->select('r.nomRegion AS region', 'COUNT(p.id) AS total')
+      ->join('p.region', 'r')
       ->groupBy('r.nomRegion')
       ->getQuery()
       ->getResult();
