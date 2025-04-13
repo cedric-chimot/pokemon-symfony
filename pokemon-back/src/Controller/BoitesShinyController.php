@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Boites;
-use App\Repository\BoitesRepository;
+use App\Repository\BoitesShinyRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,10 +13,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class BoitesShinyController extends AbstractController
 {
-  private BoitesRepository $boitesRepository;
+  private BoitesShinyRepository $boitesRepository;
   private ColorsService $colorsService;
 
-  public function __construct(BoitesRepository $boitesRepository, ColorsService $colorsService)
+  public function __construct(BoitesShinyRepository $boitesRepository, ColorsService $colorsService)
   {
     $this->boitesRepository = $boitesRepository;
     $this->colorsService = $colorsService;

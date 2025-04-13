@@ -13,10 +13,10 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class GenresController extends AbstractController
 {
-  private GenreRepository $genreRepository;
+  private GenresRepository $genreRepository;
   private EntityManagerInterface $entityManager;
 
-  public function __construct(GenreRepository $genreRepository, EntityManagerInterface $entityManager)
+  public function __construct(GenresRepository $genreRepository, EntityManagerInterface $entityManager)
   {
     $this->genreRepository = $genreRepository;
     $this->entityManager = $entityManager;

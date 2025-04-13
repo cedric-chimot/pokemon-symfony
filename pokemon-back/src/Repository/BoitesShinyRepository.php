@@ -8,9 +8,9 @@ use Doctrine\Persistence\ManagerRegistry;
 
 class BoitesShinyRepository extends ServiceEntityRepository
 {
-  public function __construct(ManagerRegistry $registry)
+public function __construct(ManagerRegistry $registry)
   {
-      parent::__construct($registry, BoitesShiny::class);
+    parent::__construct($registry, BoitesShiny::class);
   }
 
   // Trouver une boîte par son nom

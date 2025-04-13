@@ -3,6 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\BoiteShinyDresseur;
+use App\Entity\Boites;
+use App\Entity\Dresseurs;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -11,33 +13,23 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class BoiteShinyDresseurRepository extends ServiceEntityRepository
 {
-  public function __construct(ManagerRegistry $registry)
-  {
-    parent::__construct($registry, BoiteShinyDresseur::class);
-  }
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, BoiteShinyDresseur::class);
+    }
 
-  //    /**
-  //     * @return BoiteShinyDresseur[] Returns an array of BoiteShinyDresseur objects
-  //     */
-  //    public function findByExampleField($value): array
-  //    {
-  //        return $this->createQueryBuilder('b')
-  //            ->andWhere('b.exampleField = :val')
-  //            ->setParameter('val', $value)
-  //            ->orderBy('b.id', 'ASC')
-  //            ->setMaxResults(10)
-  //            ->getQuery()
-  //            ->getResult()
-  //        ;
-  //    }
+    /**
+     * Permet de trouver une association unique entre une boîte et un dresseur
+     */
+    public function findByBoiteAndDresseur(Boites $boite, Dresseurs $dresseur): ?BoiteShinyDresseur
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.boite = :boite')
+            ->andWhere('b.dresseur = :dresseur')
+            ->setParameter('boite', $boite)
+            ->setParameter('dresseur', $dresseur)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 
-  //    public function findOneBySomeField($value): ?BoiteShinyDresseur
-  //    {
-  //        return $this->createQueryBuilder('b')
-  //            ->andWhere('b.exampleField = :val')
-  //            ->setParameter('val', $value)
-  //            ->getQuery()
-  //            ->getOneOrNullResult()
-  //        ;
-  //    }
 }
