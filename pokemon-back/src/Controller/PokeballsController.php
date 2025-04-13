@@ -64,6 +64,14 @@ class PokeballsController extends AbstractController
     return $this->json($pokeballs);
   }
 
+  // Récupérer les Pokeballs avec au moins un Pokémon
+  #[Route('/available', name: 'get_available_pokeballs', methods: ['GET'])]
+  public function getAvailablePokeballs(): JsonResponse
+  {
+    $pokeballs = $this->pokeballsRepository->findAllPokeballs();
+    return $this->json($pokeballs);
+  }
+
   // Récupérer une Pokeball par son ID (données complètes)
   #[Route('/find/{id}', name: 'get_pokeball_by_id', methods: ['GET'])]
   public function getPokeballById(int $id): JsonResponse
