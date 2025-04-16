@@ -13,23 +13,23 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class BoiteShinyDresseurRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, BoiteShinyDresseur::class);
-    }
+  public function __construct(ManagerRegistry $registry)
+  {
+    parent::__construct($registry, BoiteShinyDresseur::class);
+  }
 
-    /**
-     * Permet de trouver une association unique entre une boîte et un dresseur
-     */
-    public function findByBoiteAndDresseur(Boites $boite, Dresseurs $dresseur): ?BoiteShinyDresseur
-    {
-        return $this->createQueryBuilder('b')
-            ->andWhere('b.boite = :boite')
-            ->andWhere('b.dresseur = :dresseur')
-            ->setParameter('boite', $boite)
-            ->setParameter('dresseur', $dresseur)
-            ->getQuery()
-            ->getOneOrNullResult();
-    }
+  /**
+   * Permet de trouver une association unique entre une boîte et un dresseur
+   */
+  public function findByBoiteAndDresseur(Boites $boite, Dresseurs $dresseur): ?BoiteShinyDresseur
+  {
+    return $this->createQueryBuilder('b')
+      ->andWhere('b.boiteShiny = :boite') // <-- ici
+      ->andWhere('b.dresseur = :dresseur')
+      ->setParameter('boite', $boite)
+      ->setParameter('dresseur', $dresseur)
+      ->getQuery()
+      ->getOneOrNullResult();
+  }
 
 }
