@@ -11,33 +11,19 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class BoiteShinyGenreRepository extends ServiceEntityRepository
 {
-  public function __construct(ManagerRegistry $registry)
-  {
-    parent::__construct($registry, BoiteShinyGenre::class);
-  }
+    public function __construct(ManagerRegistry $registry)
+    {
+        parent::__construct($registry, BoiteShinyGenre::class);
+    }
 
-  //    /**
-  //     * @return BoiteShinyGenre[] Returns an array of BoiteShinyGenre objects
-  //     */
-  //    public function findByExampleField($value): array
-  //    {
-  //        return $this->createQueryBuilder('b')
-  //            ->andWhere('b.exampleField = :val')
-  //            ->setParameter('val', $value)
-  //            ->orderBy('b.id', 'ASC')
-  //            ->setMaxResults(10)
-  //            ->getQuery()
-  //            ->getResult()
-  //        ;
-  //    }
-
-  //    public function findOneBySomeField($value): ?BoiteShinyGenre
-  //    {
-  //        return $this->createQueryBuilder('b')
-  //            ->andWhere('b.exampleField = :val')
-  //            ->setParameter('val', $value)
-  //            ->getQuery()
-  //            ->getOneOrNullResult()
-  //        ;
-  //    }
+    public function findByBoiteAndGenre($boite, $genre): ?BoiteShinyGenre
+    {
+        return $this->createQueryBuilder('b')
+            ->andWhere('b.boite = :boite')
+            ->andWhere('b.genre = :genre')
+            ->setParameter('boite', $boite)
+            ->setParameter('genre', $genre)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
