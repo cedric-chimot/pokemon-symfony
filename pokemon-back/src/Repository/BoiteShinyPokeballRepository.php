@@ -11,33 +11,37 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class BoiteShinyPokeballRepository extends ServiceEntityRepository
 {
+  public function findByBoiteAndPokeball($boite, $pokeball): ?BoiteShinyPokeball
+  {
+      return $this->createQueryBuilder('bp')
+          ->andWhere('bp.boite = :boite')
+          ->andWhere('bp.pokeball = :pokeball')
+          ->setParameter('boite', $boite)
+          ->setParameter('pokeball', $pokeball)
+          ->getQuery()
+          ->getOneOrNullResult();
+  }
+  
   public function __construct(ManagerRegistry $registry)
   {
     parent::__construct($registry, BoiteShinyPokeball::class);
   }
 
-  //    /**
-  //     * @return BoiteShinyPokeball[] Returns an array of BoiteShinyPokeball objects
-  //     */
-  //    public function findByExampleField($value): array
-  //    {
-  //        return $this->createQueryBuilder('b')
-  //            ->andWhere('b.exampleField = :val')
-  //            ->setParameter('val', $value)
-  //            ->orderBy('b.id', 'ASC')
-  //            ->setMaxResults(10)
-  //            ->getQuery()
-  //            ->getResult()
-  //        ;
-  //    }
+  public function add(BoiteShinyPokeball $entity, bool $flush = false): void
+  {
+    $this->_em->persist($entity);
 
-  //    public function findOneBySomeField($value): ?BoiteShinyPokeball
-  //    {
-  //        return $this->createQueryBuilder('b')
-  //            ->andWhere('b.exampleField = :val')
-  //            ->setParameter('val', $value)
-  //            ->getQuery()
-  //            ->getOneOrNullResult()
-  //        ;
-  //    }
+    if ($flush) {
+      $this->_em->flush();
+    }
+  }
+
+  public function remove(BoiteShinyPokeball $entity, bool $flush = false): void
+  {
+    $this->_em->remove($entity);
+
+    if ($flush) {
+      $this->_em->flush();
+    }
+  }
 }
